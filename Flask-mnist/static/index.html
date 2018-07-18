@@ -1,0 +1,204 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>MNIST</title>
+
+    <link rel="stylesheet" href="bootstrap.min.css"  >
+
+    <script type="text/javascript" src="jquery.min.js"></script>
+    <script type="text/javascript"  src="main.js"></script>
+  </head>
+  <body>
+    <div class="container">
+      <h1>MNIST数字识别</h1>
+      <div class="row">
+        <div class="col-md-6">
+          <p>绘制区域</p>
+          <canvas id="main"></canvas>
+          <p>
+            <button id="clear" class="btn btn-default">清空</button>
+          </p>
+        </div>
+        <div class="col-md-6">
+          <p>输入:</p>
+          <canvas id="input" style="border:1px solid" width="140" height="140"></canvas>
+          <hr>
+          <p>输出:</p>
+          <table id="output" class="table">
+            <tr>
+              <th class="col-md-1"></th>
+              <th class="col-md-2">线性模型</th>
+              <th class="col-md-2">卷积模型</th>
+            </tr>
+            <tr>
+              <th>0</th>
+              <td></td>
+              <td></td>
+            </tr>
+            <tr>
+              <th>1</th>
+              <td></td>
+              <td></td>
+            </tr>
+            <tr>
+              <th>2</th>
+              <td></td>
+              <td></td>
+            </tr>
+            <tr>
+              <th>3</th>
+              <td></td>
+              <td></td>
+            </tr>
+            <tr>
+              <th>4</th>
+              <td></td>
+              <td></td>
+            </tr>
+            <tr>
+              <th>5</th>
+              <td></td>
+              <td></td>
+            </tr>
+            <tr>
+              <th>6</th>
+              <td></td>
+              <td></td>
+            </tr>
+            <tr>
+              <th>7</th>
+              <td></td>
+              <td></td>
+            </tr>
+            <tr>
+              <th>8</th>
+              <td></td>
+              <td></td>
+            </tr>
+            <tr>
+              <th>9</th>
+              <td></td>
+              <td></td>
+            </tr>
+          </table>
+        </div>
+      </div>
+    </div>
+    
+    
+<form>猫狗识别<input type="file" id="cat_dog"> </form>		
+<script type="text/javascript">
+    let inputElement = document.getElementById('cat_dog');
+    inputElement.addEventListener('change', (e) => {
+         $(r3).html("正在识别...请稍后");
+          var formFile = new FormData();
+           formFile.append("file", document.getElementById("cat_dog").files[0]); //加入文件对象
+           $.ajax({
+               url: "/cat_dog",
+               data: formFile,
+               encType: 'multipart/form-data', //表明上传类型为文件
+               type: "Post",
+               dataType: "json",
+               cache: false,//上传文件无需缓存
+               processData: false,//用于对data参数进行序列化处理 这里必须false
+               contentType : false,
+               success: (data) => {
+                     
+                       
+                    $('#r3').html("猫："+Math.round(data.results[0] * 100)+"%   狗："+Math.round(data.results[1] * 100)+"%");
+               },
+                 error:function(result){
+                    $("#r3").html("失败");
+               }
+            });
+               
+             
+    }, false);
+</script>	 
+
+<div id="r3"></div>   
+
+<br>
+<br>
+    
+<form><input type="file" id="car"> </form>		
+<script type="text/javascript">
+    let inputElement = document.getElementById('car');
+    inputElement.addEventListener('change', (e) => {
+         $(r2).html("正在识别...请稍后");
+          var formFile = new FormData();
+           formFile.append("file", document.getElementById("car").files[0]); //加入文件对象
+           $.ajax({
+               url: "/upload",
+               data: formFile,
+               encType: 'multipart/form-data', //表明上传类型为文件
+               type: "Post",
+              // dataType: "json",
+               cache: false,//上传文件无需缓存
+               processData: false,//用于对data参数进行序列化处理 这里必须false
+               contentType : false,
+               success: function (result) {
+                    $('#r2').html('<img src="data:image/jpeg;base64,'+result+'">');
+               },
+                 error:function(result){
+                    $("#r2").html("失败");
+               }
+            });
+               
+             
+    }, false);
+</script>	 
+
+              
+            
+<button id="aa" >灰度化</button> 
+<script type="text/javascript">
+$("#aa").click(function() {
+    $.ajax({
+        url : "/image",
+        success:function(result) {              
+            $('#r2').html('<img src="data:image/jpeg;base64,'+result+'">');
+        },
+        error:function(result){
+            $("#r2").html("失败");
+        }
+    });
+});
+</script>
+
+<button id="ab" >阈值化</button> 
+<script type="text/javascript">
+$("#ab").click(function() {
+    $.ajax({
+        url : "/image2",
+        success:function(result) {              
+            $('#r2').html('<img src="data:image/jpeg;base64,'+result+'">');
+        },
+        error:function(result){
+            $("#r2").html("失败");
+        }
+    });
+});
+</script>
+
+<button id="ab3" >canny</button> 
+<script type="text/javascript">
+$("#ab3").click(function() {
+    $.ajax({
+        url : "/image3",
+        success:function(result) {              
+            $('#r2').html('<img src="data:image/jpeg;base64,'+result+'">');
+        },
+        error:function(result){
+            $("#r2").html("失败");
+        }
+    });
+});
+</script>
+
+
+
+<div id="r2"></div>               
+
+  </body>
+</html>

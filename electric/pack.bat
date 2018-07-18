@@ -1,0 +1,1 @@
+pyinstaller -F -i zzu.ico detec.py
