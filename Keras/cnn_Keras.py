@@ -19,9 +19,11 @@ def load_data(path, start_ix, n_samples):
     return (X,y)
 #x_train, y_train = load_data(r'dataset/train.h5', 0, 5)
 
+x_train, y_train = np.load('X.npy'), np.load('Y.npy')
+x_train = x_train.reshape(-1, 28, 28, 1)
 
-x_train = HDF5Matrix(r'train.h5', 'my_datas')
-y_train = HDF5Matrix(r'train.h5', 'my_labels')
+# x_train = HDF5Matrix(r'train.h5', 'my_datas')
+# y_train = HDF5Matrix(r'train.h5', 'my_labels')
 class_num=10
 
 # print(y_train.shape)
@@ -54,7 +56,15 @@ model.compile(loss='categorical_crossentropy', optimizer=Adam ,metrics=['accurac
 
 
 
-model.fit(x_train, y_train, batch_size=32,shuffle="batch", epochs=10, verbose=1)
+print('shuffle前:  ' + str(y_train[0]))
+index=np.arange(len(y_train))
+np.random.shuffle(index)
+x_train=x_train[index] #X_train是训练集，y_train是训练标签
+y_train=y_train[index]
+print('shuffle后:  ' + str(y_train[0]))
+
+
+model.fit(x_train, y_train, batch_size=32, epochs=10, verbose=1, validation_split=0.5, shuffle="batch")
 model.save('my_model.h5')
 
 # score = model.evaluate(x_test, y_test, batch_size=32)

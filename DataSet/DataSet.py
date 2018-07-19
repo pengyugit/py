@@ -1,7 +1,6 @@
 import csv
 import glob
 import os
-
 import cv2
 import h5py
 import numpy as np
@@ -16,7 +15,7 @@ def create_mydataset():
     for i in range(len(image_files)):
         dog_categories = os.listdir(path+'/'+image_files[i])
         for each_image in dog_categories:
-            fw.write(path+'/'+image_files[i]+'/' + each_image + ' %d\n'% i)
+            fw.write(path+'/'+image_files[i]+'/'+ each_image + ' %d\n'% i)
     print('生成my_dataset.txt文件成功\n')
     fw.close()
 
@@ -99,6 +98,17 @@ def create_npy(img_width, img_heigh, class_num):
     np.save('Y.npy', np.array(Y)) 
     print('npy创建成功')
    
+
+def shuffle_npy(x_train, y_train):   #h5py无法使用
+    print('shuffle前:  ' + str(y_train[0]))
+    index=np.arange(len(y_train))
+    np.random.shuffle(index)
+    x_train=x_train[index] #X_train是训练集，y_train是训练标签
+    y_train=y_train[index]
+    print('shuffle后:  ' + str(y_train[0]))
+    return x_train, y_train
+
+    
 
 def create_h5py(img_width, img_heigh, class_num):  
     h5f = h5py.File('train.h5', 'w')
@@ -215,13 +225,11 @@ def read_h5py():
 
 def read_npy():
     x, y = np.load('X.npy'), np.load('Y.npy')
-    print(x.shape)
     x = x.reshape(-1, 28, 28, 1)
-    print(y[15058])
     print(x.shape)
     print(y.shape)
-    cv2.imshow('ss', x[15058])
-    cv2.waitKey(0)
+    return x, y
+
 
 
 def mnist_to_img():
@@ -246,10 +254,10 @@ def mnist_to_img():
 #rename(r"train\1")
 #create_folder(5)
      
-# mnist_to_img()
-create_mydataset()
-
-#create_npy(28, 28, 10) 
+##mnist_to_img()
+##create_mydataset()
+##
+##create_npy(28, 28, 10) 
 
 #create_TFrecords('train',28, 28, 10)
 
@@ -265,4 +273,5 @@ create_mydataset()
 # read_h5py()
 
 
-# read_npy()
+x, y = read_npy()
+shuffle_npy(x, y)
