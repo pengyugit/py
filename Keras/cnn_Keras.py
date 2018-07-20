@@ -24,7 +24,7 @@ x_train = x_train.reshape(-1, 28, 28, 1)
 
 # x_train = HDF5Matrix(r'train.h5', 'my_datas')
 # y_train = HDF5Matrix(r'train.h5', 'my_labels')
-class_num=10
+class_num=81
 
 # print(y_train.shape)
 # print(x_train.shape)
@@ -64,7 +64,7 @@ y_train=y_train[index]
 print('shuffle后:  ' + str(y_train[0]))
 
 
-model.fit(x_train, y_train, batch_size=32, epochs=10, verbose=1, validation_split=0.5, shuffle="batch")
+model.fit(x_train, y_train, batch_size=32, epochs=3, verbose=1, validation_split=0.5, shuffle="batch")
 model.save('my_model.h5')
 
 # score = model.evaluate(x_test, y_test, batch_size=32)

@@ -12,6 +12,7 @@ def create_mydataset():
     path = 'train'
     fw = open('my_dataset.txt', 'w')
     image_files = os.listdir(path)
+    image_files.sort(key = int)
     for i in range(len(image_files)):
         dog_categories = os.listdir(path+'/'+image_files[i])
         for each_image in dog_categories:
@@ -27,7 +28,7 @@ def create_folder(class_num):
     print('%d 类文件夹生成成功' % (class_num))
 
     
-def rename(path):
+def rename_img(path):
     i = 9000
     filelist = os.listdir(path)  # 该文件夹下所有的文件（包括文件夹）
     for files in filelist:  # 遍历所有文件
@@ -40,6 +41,20 @@ def rename(path):
         Newdir = os.path.join(path, str(i)+filetype)  # 新的文件路径
         os.rename(Olddir, Newdir)  # 重命名
     
+
+def rename_folder(path):
+    filelist = os.listdir(path)  # 该文件夹下所有的文件（包括文件夹）
+    filelist.sort(key = int)
+    i = 0
+    for files in filelist:  # 遍历所有文件
+        Olddir = os.path.join(path, files)  # 原来的文件路径                
+        if os.path.isdir(Olddir):
+            if str(files) != i:
+                Newdir = os.path.join(path, str(i))
+                os.rename(Olddir, Newdir)  # 重命名
+        i += 1
+    print('over')
+
 
 # class DataSet:
 #     def __init__(self):
@@ -255,7 +270,7 @@ def mnist_to_img():
 #create_folder(5)
      
 ##mnist_to_img()
-##create_mydataset()
+#create_mydataset()
 ##
 ##create_npy(28, 28, 10) 
 
@@ -273,5 +288,5 @@ def mnist_to_img():
 # read_h5py()
 
 
-x, y = read_npy()
-shuffle_npy(x, y)
+##x, y = read_npy()
+##shuffle_npy(x, y)
