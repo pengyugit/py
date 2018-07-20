@@ -22,6 +22,13 @@ def load_data(path, start_ix, n_samples):
 x_train, y_train = np.load('X.npy'), np.load('Y.npy')
 x_train = x_train.reshape(-1, 28, 28, 1)
 
+print('shuffle前:  ' + str(y_train[0]))
+index=np.arange(len(y_train))
+np.random.shuffle(index)
+x_train=x_train[index] #X_train是训练集，y_train是训练标签
+y_train=y_train[index]
+print('shuffle后:  ' + str(y_train[0]))
+
 # x_train = HDF5Matrix(r'train.h5', 'my_datas')
 # y_train = HDF5Matrix(r'train.h5', 'my_labels')
 class_num=81
@@ -34,8 +41,6 @@ class_num=81
 
 
 model = Sequential()
-# input: 100x100 images with 3 channels -> (100, 100, 3) tensors.
-# this applies 32 convolution filters of size 3x3 each.
 model.add(Conv2D(32, (3, 3), strides=1, activation='relu', input_shape=(28, 28, 1)))
 model.add(MaxPooling2D(pool_size=(2, 2)))
 model.add(Dropout(0.25))
@@ -53,33 +58,25 @@ Adam=keras.optimizers.Adam(lr=0.001, beta_1=0.9, beta_2=0.999, epsilon=1e-08)
 
 model.compile(loss='categorical_crossentropy', optimizer=Adam ,metrics=['accuracy'])
 
-
-
-
-print('shuffle前:  ' + str(y_train[0]))
-index=np.arange(len(y_train))
-np.random.shuffle(index)
-x_train=x_train[index] #X_train是训练集，y_train是训练标签
-y_train=y_train[index]
-print('shuffle后:  ' + str(y_train[0]))
-
-
-model.fit(x_train, y_train, batch_size=32, epochs=20, verbose=1, validation_split=0.2, shuffle="batch")
+model.fit(x_train, y_train, batch_size=32, epochs=3, verbose=1, validation_split=0.5, shuffle="batch")
 model.save('my_model.h5')
 
 # score = model.evaluate(x_test, y_test, batch_size=32)
 # print(score)
 
 
-# convnet = conv_2d(convnet, 32, 5, activation='relu')
-# convnet = max_pool_2d(convnet, 5)
-# convnet = conv_2d(convnet, 64, 5, activation='relu')
-# convnet = max_pool_2d(convnet, 5)
-# convnet = conv_2d(convnet, 128, 5, activation='relu')
-# convnet = max_pool_2d(convnet, 5)
-# convnet = conv_2d(convnet, 64, 5, activation='relu')
-# convnet = max_pool_2d(convnet, 5)
-# convnet = conv_2d(convnet, 32, 5, activation='relu')
-# convnet = max_pool_2d(convnet, 5)
-# convnet = fully_connected(convnet, 1024, activation='relu')
-# convnet = dropout(convnet, 0.8)
+
+
+# lenet = Sequential()
+# lenet.add(Conv2D(6, kernel_size=3, strides=1, padding='same', input_shape=(28, 28, 1)))
+# lenet.add(MaxPooling2D(pool_size=2, strides=2))
+# lenet.add(Conv2D(16, kernel_size=5, strides=1, padding='valid'))
+# lenet.add(MaxPooling2D(pool_size=2, strides=2))
+# lenet.add(Flatten())#多维向量压成一维
+# lenet.add(Dense(120))
+# lenet.add(Dense(84))
+# lenet.add(Dense(81, activation='softmax'))
+
+# lenet.summary()
+# lenet.compile('sgd', loss='categorical_crossentropy', metrics=['accuracy'])
+# lenet.fit(x_train, y_train, batch_size=64, epochs=50, validation_split=0.5, shuffle="batch")
