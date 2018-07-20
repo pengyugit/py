@@ -9,14 +9,14 @@ import numpy as np
 import h5py
 import cv2
 
-h5f = h5py.File('train.h5', 'r')
-X = h5f['my_datas']
-Y = h5f['my_labels']
+##h5f = h5py.File('train.h5', 'r')
+##X = h5f['my_datas']
+##Y = h5f['my_labels']
 
 
     
     
-#X, Y = np.load('X.npy'), np.load('Y.npy')
+X, Y = np.load('X.npy'), np.load('Y.npy')
 
 
 
@@ -35,8 +35,8 @@ X = X.reshape([-1, 28, 28, 1])
 # print(X[8])
 # print(Y[8])
 #print(X1[8])
-cv2.imshow("s",X[0,:,:,:])
-cv2.waitKey(0)
+#cv2.imshow("s",X[0,:,:,:])
+#cv2.waitKey(0)
 
 
 
@@ -66,7 +66,7 @@ convnet = conv_2d(convnet, 32, 5, activation='relu')
 convnet = max_pool_2d(convnet, 5)
 convnet = fully_connected(convnet, 1024, activation='relu')
 convnet = dropout(convnet, 0.8)
-convnet = fully_connected(convnet, 10, activation='softmax')
+convnet = fully_connected(convnet, 81, activation='softmax')
 convnet = regression(convnet, optimizer='adam', learning_rate=0.001, loss='categorical_crossentropy', name='targets')
 model = tflearn.DNN(convnet, tensorboard_verbose=3, tensorboard_dir='logs')
 
@@ -85,7 +85,15 @@ model = tflearn.DNN(convnet, tensorboard_verbose=3, tensorboard_dir='logs')
 # network = fully_connected(network, 2, activation='softmax')
 
 
+##print('shuffle前:  ' + str(Y[0]))
+##index=np.arange(len(Y))
+##np.random.shuffle(index)
+##X=X[index] #X_train是训练集，y_train是训练标签
+##Y=Y[index]
+##print('shuffle后:  ' + str(Y[0]))
+
+
 #model = tflearn.DNN(network, tensorboard_verbose=3)   validation_set=(testX, testY),
-model.fit( X,  Y, n_epoch=1, show_metric=True, batch_size = 50, run_id = 'py')
+model.fit( X,  Y, n_epoch=20, show_metric=True, batch_size = 50, run_id = 'py')
            
 model.save('my_model.tflearn')

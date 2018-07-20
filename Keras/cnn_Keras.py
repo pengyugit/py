@@ -64,7 +64,7 @@ y_train=y_train[index]
 print('shuffle后:  ' + str(y_train[0]))
 
 
-model.fit(x_train, y_train, batch_size=32, epochs=3, verbose=1, validation_split=0.5, shuffle="batch")
+model.fit(x_train, y_train, batch_size=32, epochs=20, verbose=1, validation_split=0.2, shuffle="batch")
 model.save('my_model.h5')
 
 # score = model.evaluate(x_test, y_test, batch_size=32)

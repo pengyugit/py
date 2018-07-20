@@ -21,7 +21,7 @@ convnet = conv_2d(convnet, 32, 5, activation='relu')
 convnet = max_pool_2d(convnet, 5)
 convnet = fully_connected(convnet, 1024, activation='relu')
 convnet = dropout(convnet, 0.8)
-convnet = fully_connected(convnet, 10, activation='softmax')
+convnet = fully_connected(convnet, 81, activation='softmax')
 model2 = tflearn.DNN(convnet)
 model2.load('my_model.tflearn')
 
@@ -30,7 +30,7 @@ model2.load('my_model.tflearn')
 
 
 #img = cv2.imread('train/8/100.jpg',0)
-img = cv2.imread('1.png',0)
+img = cv2.imread('2.jpg',0)
 img=cv2.resize(img,(28,28))
 img=np.array(img, dtype=np.uint8).reshape(-1, 28, 28, 1)
 
