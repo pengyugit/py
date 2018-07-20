@@ -26,7 +26,7 @@ X, Y = np.load('X.npy'), np.load('Y.npy')
 
 #testX, testY = load_csv('test.csv',target_column = -1, has_header = False, categorical_labels=True, n_classes=2)
 #print(X[8])
-X=np.array(X, 'float32') # 归一化数据
+#X=np.array(X, 'float32') # 归一化数据
 # testX=np.array(testX, 'uint8')
 X = X.reshape([-1, 28, 28, 1])
 # testX = testX.reshape([-1, 50, 50, 1])
@@ -35,8 +35,8 @@ X = X.reshape([-1, 28, 28, 1])
 # print(X[8])
 # print(Y[8])
 #print(X1[8])
-#cv2.imshow("s",X[0,:,:,:])
-#cv2.waitKey(0)
+# cv2.imshow("s",X[0,:,:,:])
+# cv2.waitKey(0)
 
 
 
@@ -85,12 +85,12 @@ model = tflearn.DNN(convnet, tensorboard_verbose=3, tensorboard_dir='logs')
 # network = fully_connected(network, 2, activation='softmax')
 
 
-##print('shuffle前:  ' + str(Y[0]))
-##index=np.arange(len(Y))
-##np.random.shuffle(index)
-##X=X[index] #X_train是训练集，y_train是训练标签
-##Y=Y[index]
-##print('shuffle后:  ' + str(Y[0]))
+print('shuffle前:  ' + str(Y[0]))
+index=np.arange(len(Y))
+np.random.shuffle(index)
+X=X[index] #X_train是训练集，y_train是训练标签
+Y=Y[index]
+print('shuffle后:  ' + str(Y[0]))
 
 
 #model = tflearn.DNN(network, tensorboard_verbose=3)   validation_set=(testX, testY),
