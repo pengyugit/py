@@ -4,34 +4,41 @@ import numpy as np
 import sys
 import glob
 from pyzbar.pyzbar import decode
-img_path=sys.argv[1]
-model_img=sys.argv[2]
-model_txt=sys.argv[3]
+import tflearn
+from tflearn.layers.core import input_data, dropout, fully_connected
+from tflearn.layers.conv import conv_2d, max_pool_2d
+from tflearn.layers.normalization import local_response_normalization
+from tflearn.layers.estimator import regression
+from tflearn.data_utils import load_csv
 
-rotate=sys.argv[5]
-showbar=sys.argv[6]
-black=sys.argv[7]
-black_model=sys.argv[8]
-black_threshold=sys.argv[9]
+convnet = input_data(shape=[None, 28, 28, 1], name='input')
+convnet = conv_2d(convnet, 32, 3, activation='relu')
+convnet = max_pool_2d(convnet, 2)
+convnet = dropout(convnet, 0.25)
+convnet = conv_2d(convnet, 64, 3, activation='relu')
+convnet = max_pool_2d(convnet, 2)
+convnet = dropout(convnet, 0.25)
+convnet = fully_connected(convnet, 1024, activation='relu')
+convnet = dropout(convnet, 0.5)
+convnet = fully_connected(convnet, 81, activation='softmax')
+model2 = tflearn.DNN(convnet)
+model2.load('my_model.tflearn')
 
-#with open('results.txt','a') as file:
+img_path= 'img/*308.jpg'
+model_img='单相模板.jpg'
+model_txt='单相模板.txt'
+
+
+
 imgs = glob.glob(img_path)
-if black=='1':
-    template =cv2.imdecode(np.fromfile(black_model,dtype=np.uint8),-1)
-else:
-    template =cv2.imdecode(np.fromfile(model_img,dtype=np.uint8),-1)
-    
+
+template =cv2.imdecode(np.fromfile(model_img,dtype=np.uint8),-1)
 template = cv2.cvtColor(template, cv2.COLOR_BGR2GRAY)
 w2, h2 = template.shape[::-1]
     
 for img_p in imgs:
+    print(img_p)
     img=cv2.imdecode(np.fromfile(img_p,dtype=np.uint8),-1)
-    if rotate=='1':
-        img = cv2.flip(cv2.transpose(img), 1)
-    elif rotate=='2':
-        img=cv2.flip(img, -1)
-    elif rotate=='3':
-        img= cv2.flip(cv2.transpose(cv2.flip(img, -1)), 1)
     gray = cv2.cvtColor(img, cv2.COLOR_BGR2GRAY)
     w1, h1 = img.shape[:2]
     center = (h1 // 2, w1 // 2)
@@ -58,58 +65,94 @@ for img_p in imgs:
     bottom_right2 = (top_left2[0] + w2, top_left2[1] + h2)
     roi = rotated[top_left2[1]:bottom_right2[1], top_left2[0]:bottom_right2[0]]
     dst = cv2.cvtColor(roi, cv2.COLOR_BGR2GRAY)
-    #roi2=roi.copy()
-    
-
-        
-        
-    if black=='1':
-        w3, h3 = dst.shape[::-1]
-       # std = np.std(dst[int(4*h3/23):int(17*h3/24), int(w3/10):int(9*w3/10) ])
-        std = np.std(dst)
-        if std>float(black_threshold):
-            print("black_error"+' ',end="")
-        else:
-            print('black_normal'+' ',end="")
-       # print(std)
-        # cv2.imshow("img",dst)
-       #cv2.imshow("img",dst[int(4*h3/23):int(17*h3/24), int(w3/10):int(9*w3/10) ])
-        # cv2.waitKey(0)
-
-    else:
+  
+    error=0
+    str1=''
+    with open(model_txt, 'r') as file2:
         error=0
-        str1=''
-        with open(model_txt, 'r') as file2:
-            error=0
-            lines = file2.readlines()
-            for line in lines:
-                list = line.split()
-              #cv2.rectangle(roi2,(int(list[0]),int(list[1])), (int(list[2]),int(list[3])), (0,255,0), 1)
-                std = np.std(dst[int(list[1]):int(list[3]), int(list[0]):int(list[2])])
-            if std < int(threshold):
-                  #cv2.rectangle(roi,(int(list[0]),int(list[1])), (int(list[2]),int(list[3])), (0,0,255), 1)
-                error=error+1
-                str1=str1+' '+str(list[4])
-        if error==0:
-            print('normal ' +' ',end="")
-          # cv2.imshow("img",roi2 )
-          # cv2.waitKey(0)
-        elif error>30:
-            print('backScreen:' +' ',end="")
-         # file.write('backScreen:'+img_p+'\n')
-        else:
-            print('error:'+str1 +' ',end="")
-         # file.write('error:'+str1+'  path:'+img_p +'\n')
-         
-          # cv2.imshow("img",roi )
-          # cv2.waitKey(0)
-              
-         
-         
-    if showbar=='1':
-        bars=decode(gray[int(h1/2):int(h1),int(w1/5):int(w1)])
-        if bars:
-            for i in range(len(bars)):
-                print(str(int(bars[i][0]))+'  path:'+img_p)
-        else:
-            print('no bars '+'  path:'+img_p)
+        lines = file2.readlines()
+        for line in lines:
+            list = line.split()
+
+            cnn_roi=cv2.resize(dst[int(list[1]):int(list[3]), int(list[0]):int(list[2])],(28,28))
+            cnn_roi=np.array(cnn_roi, dtype=np.uint8).reshape(-1, 28, 28, 1)
+            cnn_roi = 1 - cnn_roi/ 255.0  
+            output1=model2.predict(cnn_roi)[0]
+            output1 = output1.tolist()
+            result = output1.index(max(output1))
+            print(max(output1))
+            if int(list[4]) <= 51 :
+                if int(result) != int(list[4]):
+                    cv2.rectangle(roi,(int(list[0]),int(list[1])), (int(list[2]),int(list[3])), (0,0,255), 1)
+                    error=error+1
+                    str1=str1+' '+str(list[4])
+            elif int(list[4]) > 51 and int(list[4]) <= 59:
+                if int(result) != 5:
+                    cv2.rectangle(roi,(int(list[0]),int(list[1])), (int(list[2]),int(list[3])), (0,0,255), 1)
+                    error=error+1
+                    str1=str1+' '+str(5)
+            elif int(list[4]) > 59 and  int(list[4]) < 85:
+                if int(result) != (int(list[4])-8):
+                    cv2.rectangle(roi,(int(list[0]),int(list[1])), (int(list[2]),int(list[3])), (0,0,255), 1)
+                    error=error+1
+                    str1=str1+' '+str(int(list[4])-8)
+            elif int(list[4]) == 85:
+                if int(result) != 32:
+                    cv2.rectangle(roi,(int(list[0]),int(list[1])), (int(list[2]),int(list[3])), (0,0,255), 1)
+                    error=error+1
+                    str1=str1+' '+str(32)
+            elif int(list[4]) == 86:
+                if int(result) != 77:
+                    cv2.rectangle(roi,(int(list[0]),int(list[1])), (int(list[2]),int(list[3])), (0,0,255), 1)
+                    error=error+1
+                    str1=str1+' '+str(77)
+            elif int(list[4]) == 87:
+                if int(result) != 78:
+                    cv2.rectangle(roi,(int(list[0]),int(list[1])), (int(list[2]),int(list[3])), (0,0,255), 1)
+                    error=error+1
+                    str1=str1+' '+str(78)
+            elif int(list[4]) == 88:
+                if int(result) != 29:
+                    cv2.rectangle(roi,(int(list[0]),int(list[1])), (int(list[2]),int(list[3])), (0,0,255), 1)
+                    error=error+1
+                    str1=str1+' '+str(29)
+            elif int(list[4]) == 89:
+                if int(result) != 30:
+                    cv2.rectangle(roi,(int(list[0]),int(list[1])), (int(list[2]),int(list[3])), (0,0,255), 1)
+                    error=error+1
+                    str1=str1+' '+str(30)
+            elif int(list[4]) == 90:
+                if int(result) != 79:
+                    cv2.rectangle(roi,(int(list[0]),int(list[1])), (int(list[2]),int(list[3])), (0,0,255), 1)
+                    error=error+1
+                    str1=str1+' '+str(79)
+            elif int(list[4]) == 91:
+                if int(result) != 80:
+                    cv2.rectangle(roi,(int(list[0]),int(list[1])), (int(list[2]),int(list[3])), (0,0,255), 1)
+                    error=error+1
+                    str1=str1+' '+str(80)
+
+
+
+
+
+            
+            # std = np.std(dst[int(list[1]):int(list[3]), int(list[0]):int(list[2])])
+            # if std < int(5):
+            #     cv2.rectangle(roi,(int(list[0]),int(list[1])), (int(list[2]),int(list[3])), (0,0,255), 1)
+            #     error=error+1
+            #     str1=str1+' '+str(list[4])
+            # else:
+            #     cv2.rectangle(roi,(int(list[0]),int(list[1])), (int(list[2]),int(list[3])), (0,255,0), 1)
+    if error==0:
+        print('normal ' )
+        cv2.imshow("img",roi )
+        cv2.waitKey(0)
+    elif error>30:
+        print('backScreen:')
+        cv2.imshow("img",roi )
+        cv2.waitKey(0)
+    else:
+        print('error:'+str1 )
+        cv2.imshow("img",roi )
+        cv2.waitKey(0)
