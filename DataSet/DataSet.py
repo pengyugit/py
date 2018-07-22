@@ -23,8 +23,8 @@ def create_mydataset():
     
 def create_folder(class_num):
     for i in range(class_num):
-        if not os.path.exists(str(i)):
-            os.makedirs(str(i))
+        if not os.path.exists('train/'+str(i)):
+            os.makedirs('train/'+str(i))
     print('%d 类文件夹生成成功' % (class_num))
 
     

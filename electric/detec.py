@@ -58,9 +58,16 @@ for img_p in imgs:
     bottom_right2 = (top_left2[0] + w2, top_left2[1] + h2)
     roi = rotated[top_left2[1]:bottom_right2[1], top_left2[0]:bottom_right2[0]]
     dst = cv2.cvtColor(roi, cv2.COLOR_BGR2GRAY)
-    #roi2=roi.copy()
-    
+   
+    led = rotated[bottom_right2[1]+int(13*h2/48) : bottom_right2[1]+int(19*h2/48), top_left2[0] + int(16*w2/48): top_left2[0] + int(37*w2/96)]
+    print(np.mean(led))
+    if np.mean(led)>190:
+        print("led_on"+' ',end="")
+    else:
+        print("led_off"+' ',end="")
 
+    cv2.imshow("img",led )
+    cv2.waitKey(0)
         
         
     if black=='1':
@@ -84,16 +91,17 @@ for img_p in imgs:
             lines = file2.readlines()
             for line in lines:
                 list = line.split()
-              #cv2.rectangle(roi2,(int(list[0]),int(list[1])), (int(list[2]),int(list[3])), (0,255,0), 1)
                 std = np.std(dst[int(list[1]):int(list[3]), int(list[0]):int(list[2])])
-            if std < int(threshold):
-                  #cv2.rectangle(roi,(int(list[0]),int(list[1])), (int(list[2]),int(list[3])), (0,0,255), 1)
-                error=error+1
-                str1=str1+' '+str(list[4])
+                if std < int(threshold):
+                    cv2.rectangle(roi,(int(list[0]),int(list[1])), (int(list[2]),int(list[3])), (0,0,255), 1)
+                    error=error+1
+                    str1=str1+' '+str(list[4])
+                else:
+                    cv2.rectangle(roi,(int(list[0]),int(list[1])), (int(list[2]),int(list[3])), (0,255,0), 1)
         if error==0:
             print('normal ' +' ',end="")
-          # cv2.imshow("img",roi2 )
-          # cv2.waitKey(0)
+            # cv2.imshow("img",roi )
+            # cv2.waitKey(0)
         elif error>30:
             print('backScreen:' +' ',end="")
          # file.write('backScreen:'+img_p+'\n')
@@ -101,8 +109,8 @@ for img_p in imgs:
             print('error:'+str1 +' ',end="")
          # file.write('error:'+str1+'  path:'+img_p +'\n')
          
-          # cv2.imshow("img",roi )
-          # cv2.waitKey(0)
+            # cv2.imshow("img",roi )
+            # cv2.waitKey(0)
               
          
          

@@ -5,26 +5,30 @@ import sys
 import glob
 from pyzbar.pyzbar import decode
 import tflearn
-from tflearn.layers.core import input_data, dropout, fully_connected
-from tflearn.layers.conv import conv_2d, max_pool_2d
-from tflearn.layers.normalization import local_response_normalization
-from tflearn.layers.estimator import regression
-from tflearn.data_utils import load_csv
+# from tflearn.layers.core import input_data, dropout, fully_connected
+# from tflearn.layers.conv import conv_2d, max_pool_2d
+# from tflearn.layers.normalization import local_response_normalization
+# from tflearn.layers.estimator import regression
+# from tflearn.data_utils import load_csv
 
-convnet = input_data(shape=[None, 28, 28, 1], name='input')
-convnet = conv_2d(convnet, 32, 3, activation='relu')
-convnet = max_pool_2d(convnet, 2)
-convnet = dropout(convnet, 0.25)
-convnet = conv_2d(convnet, 64, 3, activation='relu')
-convnet = max_pool_2d(convnet, 2)
-convnet = dropout(convnet, 0.25)
-convnet = fully_connected(convnet, 1024, activation='relu')
-convnet = dropout(convnet, 0.5)
-convnet = fully_connected(convnet, 81, activation='softmax')
-model2 = tflearn.DNN(convnet)
-model2.load('my_model.tflearn')
+# convnet = input_data(shape=[None, 28, 28, 1], name='input')
+# convnet = conv_2d(convnet, 32, 3, activation='relu')
+# convnet = max_pool_2d(convnet, 2)
+# convnet = dropout(convnet, 0.25)
+# convnet = conv_2d(convnet, 64, 3, activation='relu')
+# convnet = max_pool_2d(convnet, 2)
+# convnet = dropout(convnet, 0.25)
+# convnet = fully_connected(convnet, 1024, activation='relu')
+# convnet = dropout(convnet, 0.5)
+# convnet = fully_connected(convnet, 81, activation='softmax')
+# model2 = tflearn.DNN(convnet)
+# model2.load('my_model.tflearn')
 
-img_path= 'img/*308.jpg'
+from keras.models import load_model
+model2 = load_model('my_model.h5')
+
+
+img_path= '1.jpg'
 model_img='单相模板.jpg'
 model_txt='单相模板.txt'
 
@@ -37,7 +41,6 @@ template = cv2.cvtColor(template, cv2.COLOR_BGR2GRAY)
 w2, h2 = template.shape[::-1]
     
 for img_p in imgs:
-    print(img_p)
     img=cv2.imdecode(np.fromfile(img_p,dtype=np.uint8),-1)
     gray = cv2.cvtColor(img, cv2.COLOR_BGR2GRAY)
     w1, h1 = img.shape[:2]
@@ -65,6 +68,8 @@ for img_p in imgs:
     bottom_right2 = (top_left2[0] + w2, top_left2[1] + h2)
     roi = rotated[top_left2[1]:bottom_right2[1], top_left2[0]:bottom_right2[0]]
     dst = cv2.cvtColor(roi, cv2.COLOR_BGR2GRAY)
+
+    
   
     error=0
     str1=''
@@ -80,53 +85,67 @@ for img_p in imgs:
             output1=model2.predict(cnn_roi)[0]
             output1 = output1.tolist()
             result = output1.index(max(output1))
-            print(max(output1))
+           # print(max(output1))
+            
             if int(list[4]) <= 51 :
+                print(str(result)+' '+list[4])
                 if int(result) != int(list[4]):
+                    cv2.imwrite(list[4]+'.jpg',dst[int(list[1]):int(list[3]), int(list[0]):int(list[2])],(28,28) )
                     cv2.rectangle(roi,(int(list[0]),int(list[1])), (int(list[2]),int(list[3])), (0,0,255), 1)
                     error=error+1
                     str1=str1+' '+str(list[4])
             elif int(list[4]) > 51 and int(list[4]) <= 59:
+                print(str(result)+'  5')
                 if int(result) != 5:
                     cv2.rectangle(roi,(int(list[0]),int(list[1])), (int(list[2]),int(list[3])), (0,0,255), 1)
                     error=error+1
                     str1=str1+' '+str(5)
             elif int(list[4]) > 59 and  int(list[4]) < 85:
+                print(str(result)+' '+str(int(list[4])-8))
                 if int(result) != (int(list[4])-8):
                     cv2.rectangle(roi,(int(list[0]),int(list[1])), (int(list[2]),int(list[3])), (0,0,255), 1)
                     error=error+1
                     str1=str1+' '+str(int(list[4])-8)
             elif int(list[4]) == 85:
+                print(str(result)+'  32')
                 if int(result) != 32:
+                    
                     cv2.rectangle(roi,(int(list[0]),int(list[1])), (int(list[2]),int(list[3])), (0,0,255), 1)
                     error=error+1
                     str1=str1+' '+str(32)
             elif int(list[4]) == 86:
+                print(str(result)+'  77')
                 if int(result) != 77:
+                    
                     cv2.rectangle(roi,(int(list[0]),int(list[1])), (int(list[2]),int(list[3])), (0,0,255), 1)
                     error=error+1
                     str1=str1+' '+str(77)
             elif int(list[4]) == 87:
+                print(str(result)+'  78')
                 if int(result) != 78:
                     cv2.rectangle(roi,(int(list[0]),int(list[1])), (int(list[2]),int(list[3])), (0,0,255), 1)
                     error=error+1
                     str1=str1+' '+str(78)
             elif int(list[4]) == 88:
+                print(str(result)+'  29')
                 if int(result) != 29:
                     cv2.rectangle(roi,(int(list[0]),int(list[1])), (int(list[2]),int(list[3])), (0,0,255), 1)
                     error=error+1
                     str1=str1+' '+str(29)
             elif int(list[4]) == 89:
+                print(str(result)+'  30')
                 if int(result) != 30:
                     cv2.rectangle(roi,(int(list[0]),int(list[1])), (int(list[2]),int(list[3])), (0,0,255), 1)
                     error=error+1
                     str1=str1+' '+str(30)
             elif int(list[4]) == 90:
+                print(str(result)+'  79')
                 if int(result) != 79:
                     cv2.rectangle(roi,(int(list[0]),int(list[1])), (int(list[2]),int(list[3])), (0,0,255), 1)
                     error=error+1
                     str1=str1+' '+str(79)
             elif int(list[4]) == 91:
+                print(str(result)+'  80')
                 if int(result) != 80:
                     cv2.rectangle(roi,(int(list[0]),int(list[1])), (int(list[2]),int(list[3])), (0,0,255), 1)
                     error=error+1

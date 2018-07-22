@@ -46,7 +46,7 @@ model2.load('my_model.tflearn')
 
 
 #img = cv2.imread('train/8/100.jpg',0)
-img = cv2.imread('1.png',0)
+img = cv2.imread('2.jpg',0)
 img=cv2.resize(img,(28,28))
 img=np.array(img, dtype=np.uint8).reshape(-1, 28, 28, 1)
 img = 1 - img/ 255.0  
