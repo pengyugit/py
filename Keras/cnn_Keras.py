@@ -5,7 +5,6 @@ from keras.models import Sequential
 from keras.layers import Dense, Dropout, Flatten
 from keras.layers import Conv2D, MaxPooling2D
 from keras.optimizers import Adam
-from keras.datasets import cifar100
 from keras.models import load_model
 import cv2
 
@@ -20,7 +19,7 @@ def load_data(path, start_ix, n_samples):
 #x_train, y_train = load_data(r'dataset/train.h5', 0, 5)
 
 x_train, y_train = np.load('X.npy'), np.load('Y.npy')
-x_train = x_train.reshape(-1, 28, 28, 1)
+x_train = x_train.reshape(-1, 50, 50, 1)
 
 print('shuffle前:  ' + str(y_train[0]))
 index=np.arange(len(y_train))
@@ -41,7 +40,7 @@ class_num=81
 
 
 model = Sequential()
-model.add(Conv2D(32, (3, 3), strides=1, activation='relu', input_shape=(28, 28, 1)))
+model.add(Conv2D(32, (3, 3), strides=1, activation='relu', input_shape=(50, 50, 1)))
 model.add(MaxPooling2D(pool_size=(2, 2)))
 model.add(Dropout(0.25))
 

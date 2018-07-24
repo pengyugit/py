@@ -79,18 +79,18 @@ for img_p in imgs:
         for line in lines:
             list = line.split()
 
-            cnn_roi=cv2.resize(dst[int(list[1]):int(list[3]), int(list[0]):int(list[2])],(28,28))
-            cnn_roi=np.array(cnn_roi, dtype=np.uint8).reshape(-1, 28, 28, 1)
+            cnn_roi=cv2.resize(dst[int(list[1]):int(list[3]), int(list[0]):int(list[2])],(50,50))
+            cnn_roi=np.array(cnn_roi, dtype=np.uint8).reshape(-1, 50, 50, 1)
             cnn_roi = 1 - cnn_roi/ 255.0  
             output1=model2.predict(cnn_roi)[0]
             output1 = output1.tolist()
             result = output1.index(max(output1))
-           # print(max(output1))
+            print(max(output1))
             
             if int(list[4]) <= 51 :
                 print(str(result)+' '+list[4])
                 if int(result) != int(list[4]):
-                    cv2.imwrite(list[4]+'.jpg',dst[int(list[1]):int(list[3]), int(list[0]):int(list[2])],(28,28) )
+                   # cv2.imwrite(list[4]+'.jpg',dst[int(list[1]):int(list[3]), int(list[0]):int(list[2])],(28,28) )
                     cv2.rectangle(roi,(int(list[0]),int(list[1])), (int(list[2]),int(list[3])), (0,0,255), 1)
                     error=error+1
                     str1=str1+' '+str(list[4])

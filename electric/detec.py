@@ -100,8 +100,8 @@ for img_p in imgs:
                     cv2.rectangle(roi,(int(list[0]),int(list[1])), (int(list[2]),int(list[3])), (0,255,0), 1)
         if error==0:
             print('normal ' +' ',end="")
-            # cv2.imshow("img",roi )
-            # cv2.waitKey(0)
+            cv2.imshow("img",roi )
+            cv2.waitKey(0)
         elif error>30:
             print('backScreen:' +' ',end="")
          # file.write('backScreen:'+img_p+'\n')
