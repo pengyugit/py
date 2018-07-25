@@ -1,6 +1,5 @@
 import glob
 import os
-
 import cv2
 import h5py
 import numpy as np
@@ -58,7 +57,7 @@ def rename_folder(path):
 
 def mnist_to_img():
     from tensorflow.examples.tutorials.mnist import input_data
-    mnist_data = input_data.read_data_sets('MNIST_data/')
+    mnist_data = input_data.read_data_sets('MNIST_data/', one_hot=False)
     images = mnist_data.train.images
     labels = mnist_data.train.labels
     num_examples = mnist_data.train.num_examples
@@ -72,6 +71,28 @@ def mnist_to_img():
         # 存储图片时，label_index的格式，方便在制作数据集时，从文件名即可知道label
         img.save('train/'+str(label)+"/{}_{}.png".format(label, i))
     print('over')
+
+
+def img_generator(img_path):
+    from keras.preprocessing.image import ImageDataGenerator, load_img
+    datagen = ImageDataGenerator(
+            rotation_range=40,
+            width_shift_range=0.2,
+            height_shift_range=0.2,
+            shear_range=0.2,
+            zoom_range=0.2,
+            horizontal_flip=True,
+            fill_mode='nearest')
+    img = cv2.imread(img_path, 0)
+    img = cv2.resize(img, (50, 50))
+    img = np.array(img) 
+    img = img.reshape(-1, 50, 50, 1)
+    i = 0
+    for batch in datagen.flow(img, batch_size=1,
+                            save_to_dir='preview', save_prefix='0', save_format='jpeg'):
+        i += 1
+        if i > 20:
+            break  # otherwise the generator would loop indefinitely
 
 
 '''
@@ -114,8 +135,8 @@ def create_npy(w, h, class_num):
             Y.append(label_one_hot)
     np.save('X.npy', np.array(X))
     np.save('Y.npy', np.array(Y)) 
-    print('y[0]:  ' + y[0])
-    cv2.imshow('y[0]',y[0] 
+    print('y[0]:' + str(y[0]))
+    cv2.imshow('x[0]',x[0])
     cv2.waitKey(0)
     print('npy创建成功')
    
@@ -169,8 +190,8 @@ def create_h5py(w, h, class_num, shuffle=True):
     y[:, :] = temp_y
     print('y.shape:  ' + str(y.shape))
     print('x.shape:  ' + str(x.shape))    
-    print('y[0]:  ' + y[0])
-    cv2.imshow('y[0]',y[0] 
+    print('y[0]:' + str(y[0]))
+    cv2.imshow('x[0]',x[0])
     cv2.waitKey(0)       
     h5f.close()
     print('h5py创建成功')
@@ -240,14 +261,6 @@ def create_TFrecords(path, w, h,  classes_num):
     print('TFrecord创建成功')
 
 
-def get_batch_TFrecords(imgs, labels, n_classes, batch_size):
-    imgs_batch, labels_batch = tf.train.shuffle_batch([imgs, labels], batch_size=batch_size, capacity=2000, min_after_dequeue=1000)
-    labels_batch = tf.one_hot(labels_batch, n_classes)
-    labels_batch = tf.cast(labels_batch, dtype=tf.int64)
-    labels_batch = tf.reshape(labels_batch, [batch_size, n_classes])
-    return imgs_batch, labels_batch   
-
-
 def read_TFrecords(filename):
     reader = tf.TFRecordReader()
     filename_queue = tf.train.string_input_producer([filename])
@@ -257,7 +270,36 @@ def read_TFrecords(filename):
                                            'my_labels': tf.FixedLenFeature([], tf.int64),
                                            'my_datas': tf.FixedLenFeature([], tf.string), })
     img = tf.decode_raw(features['my_datas'], tf.uint8)
-    img = tf.reshape(img, [28, 28, 1])
+    img = tf.reshape(img, [25, 25, 1])
     img = 1 - tf.cast(img, tf.float32) / 255.0
     label = tf.cast(features['my_labels'], tf.int32)
     return img, label
+
+
+def get_TFbatch(imgs, labels, n_classes, batch_size):
+    imgs_batch, labels_batch = tf.train.shuffle_batch([imgs, labels],batch_size=batch_size,capacity=2000,min_after_dequeue=1000)
+    labels_batch = tf.one_hot(labels_batch, n_classes)
+    labels_batch = tf.cast(labels_batch, dtype=tf.int64)
+    labels_batch = tf.reshape(labels_batch, [batch_size, n_classes])
+    return imgs_batch, labels_batch
+
+
+def test_TFrecords(n_classes=10, batch_size=64):
+    img, label=read_TFrecords('train.tfrecords')
+    imgs_batch, labels_batch=get_TFbatch(img, label, n_classes, batch_size)
+    with tf.Session() as sess:
+        coord=tf.train.Coordinator()#创建一个协调器，管理线程  若数据非TFrecord 则可不需要这两句
+        threads= tf.train.start_queue_runners(sess=sess, coord=coord)#启动QueueRunner, 此时文件名队列已经进队 TFrecord数据必须开启队列，否则tensorflow将一直挂起
+        img, label=sess.run([imgs_batch, labels_batch])
+        print('y.shape:  ' + str(label.shape)+'  x.shape:  ' + str(img.shape))
+        print('y[0]:' + str(label[0]))
+        cv2.imshow('x[0]',img[0])
+        cv2.waitKey(0) 
+        coord.request_stop()
+        coord.join(threads) #把开启的线程加入主线程，等待threads结束
+
+
+
+
+
+
