@@ -7,6 +7,7 @@ import tensorflow as tf
 from PIL import Image
 
 
+
 def create_folder(class_num):
     for i in range(class_num):
         if not os.path.exists('train/'+str(i)):
@@ -39,6 +40,7 @@ def rename_img(path):
         filetype = os.path.splitext(files)[1]  # 文件扩展名
         Newdir = os.path.join(path, str(i)+filetype)  # 新的文件路径
         os.rename(Olddir, Newdir)  # 重命名
+    print('over')
     
 
 def rename_folder(path):
