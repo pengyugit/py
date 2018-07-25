@@ -59,16 +59,11 @@ train_op = tf.train.AdamOptimizer(learning_rate=0.0001).minimize(loss)
 correct_prediction = tf.equal(tf.argmax(y, 1), tf.argmax(y_, 1))
 accuracy = tf.reduce_mean(tf.cast(correct_prediction, tf.float32))
 
-
 img, label = read_TFrecords('train.tfrecords')
 train_imgs_batch, train_label_batch=get_TFbatch(img, label, n_classes=10, batch_size=64)
 
-
 saver = tf.train.Saver(variables)
-summary_op = tf.summary.merge_all()
 with tf.Session() as sess:
-    train_writer = tf.summary.FileWriter('log/log_train_dir', sess.graph)
-    val_writer = tf.summary.FileWriter('log/logs_val_dir', sess.graph)
     sess.run(tf.global_variables_initializer())
 
     coord=tf.train.Coordinator()
@@ -79,21 +74,15 @@ with tf.Session() as sess:
             break
         train_batch, train_labels = sess.run([train_imgs_batch, train_label_batch])
         #val_images, val_labels = sess.run([val_imgs_batch, val_label_batch])
-        
         _ , train_loss, train_acc = sess.run([train_op, loss, accuracy], feed_dict={x: train_batch, y_: train_labels, keep_prob: 0.5})
        # val_loss, val_acc = sess.run([loss, accuracy], feed_dict={x: val_images, y_: val_labels, keep_prob: 1.0})
         if step % 10 == 0:
             print('Step %d, loss %f, acc %.2f%%  ' % (step, train_loss ,train_acc * 100.0))
 
-            summary_str = sess.run(summary_op)
-            train_writer.add_summary(summary_str, step)
-            val_writer.add_summary(summary_str, step)
-
     checkpoint_path = os.path.join( 'model', 'convolutional.ckpt')
    # saver.save(sess, checkpoint_path, global_step=step)
     saver.save(sess, checkpoint_path, write_meta_graph=False, write_state=False)
-    
-    
+
     coord.request_stop()
     coord.join(threads) #把开启的线程加入主线程，等待threads结束
     print('all threads are stopped!')
