@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 
-# Form implementation generated from reading ui file 'my_ui.ui'
+# Form implementation generated from reading ui file 'Video.ui'
 #
 # Created by: PyQt5 UI code generator 5.11.2
 #
@@ -8,7 +8,7 @@
 
 from PyQt5 import QtCore, QtGui, QtWidgets
 
-class Ui_Form(object):
+class Ui_Form1(object):
     def setupUi(self, Form):
         Form.setObjectName("Form")
         Form.resize(760, 494)
