@@ -78,12 +78,12 @@ def mnist_to_img():
 def img_generator(img_path):
     from keras.preprocessing.image import ImageDataGenerator, load_img
     datagen = ImageDataGenerator(
-            rotation_range=40,
+            rotation_range=5,
             width_shift_range=0.2,
             height_shift_range=0.2,
-            shear_range=0.2,
-            zoom_range=0.2,
-            horizontal_flip=True,
+            shear_range=0.0,
+            zoom_range=0.1,
+            horizontal_flip=False,
             fill_mode='nearest')
     img = cv2.imread(img_path, 0)
     img = cv2.resize(img, (50, 50))
@@ -93,8 +93,9 @@ def img_generator(img_path):
     for batch in datagen.flow(img, batch_size=1,
                             save_to_dir='preview', save_prefix='0', save_format='jpeg'):
         i += 1
-        if i > 20:
+        if i > 30:
             break  # otherwise the generator would loop indefinitely
+
 
 
 '''
