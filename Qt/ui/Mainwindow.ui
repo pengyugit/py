@@ -6,12 +6,12 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>540</width>
+    <width>580</width>
     <height>436</height>
    </rect>
   </property>
   <property name="windowTitle">
-   <string>MainWindow</string>
+   <string>无人机地面接收软件</string>
   </property>
   <property name="styleSheet">
    <string notr="true">background-color: rgb(35,35,35);
@@ -34,43 +34,13 @@ QPushButton:pressed{
   <widget class="QWidget" name="centralwidget">
    <layout class="QGridLayout" name="gridLayout_2">
     <item row="0" column="1">
-     <layout class="QGridLayout" name="gridLayout" rowstretch="0" columnstretch="0,0">
+     <layout class="QGridLayout" name="gridLayout" rowstretch="0" columnstretch="0">
       <property name="sizeConstraint">
        <enum>QLayout::SetFixedSize</enum>
       </property>
       <property name="spacing">
        <number>3</number>
       </property>
-      <item row="0" column="0">
-       <widget class="QLabel" name="label">
-        <property name="sizePolicy">
-         <sizepolicy hsizetype="Expanding" vsizetype="Preferred">
-          <horstretch>0</horstretch>
-          <verstretch>0</verstretch>
-         </sizepolicy>
-        </property>
-        <property name="font">
-         <font>
-          <family>微软雅黑</family>
-          <pointsize>40</pointsize>
-          <weight>75</weight>
-          <italic>false</italic>
-          <bold>true</bold>
-          <underline>false</underline>
-          <strikeout>false</strikeout>
-         </font>
-        </property>
-        <property name="styleSheet">
-         <string notr="true">color: rgb(40, 40, 40);background-color: rgb(65, 65,65);</string>
-        </property>
-        <property name="text">
-         <string>简介</string>
-        </property>
-        <property name="alignment">
-         <set>Qt::AlignCenter</set>
-        </property>
-       </widget>
-      </item>
      </layout>
     </item>
     <item row="0" column="0">
@@ -84,35 +54,6 @@ QPushButton:pressed{
       <property name="topMargin">
        <number>10</number>
       </property>
-      <item>
-       <widget class="QPushButton" name="pushButton_4">
-        <property name="sizePolicy">
-         <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
-          <horstretch>0</horstretch>
-          <verstretch>0</verstretch>
-         </sizepolicy>
-        </property>
-        <property name="font">
-         <font>
-          <family>微软雅黑</family>
-          <pointsize>13</pointsize>
-         </font>
-        </property>
-        <property name="styleSheet">
-         <string notr="true">color: rgb(255, 255, 255);</string>
-        </property>
-        <property name="text">
-         <string>首页</string>
-        </property>
-        <property name="icon">
-         <iconset>
-          <normaloff>../../14-video.ico</normaloff>../../14-video.ico</iconset>
-        </property>
-        <property name="default">
-         <bool>false</bool>
-        </property>
-       </widget>
-      </item>
       <item>
        <widget class="QPushButton" name="pushButton_2">
         <property name="sizePolicy">
@@ -143,28 +84,6 @@ QPushButton:pressed{
        </widget>
       </item>
       <item>
-       <widget class="QPushButton" name="pushButton">
-        <property name="sizePolicy">
-         <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
-          <horstretch>0</horstretch>
-          <verstretch>0</verstretch>
-         </sizepolicy>
-        </property>
-        <property name="font">
-         <font>
-          <family>微软雅黑</family>
-          <pointsize>13</pointsize>
-         </font>
-        </property>
-        <property name="styleSheet">
-         <string notr="true">color: rgb(255, 255, 255);</string>
-        </property>
-        <property name="text">
-         <string>数据</string>
-        </property>
-       </widget>
-      </item>
-      <item>
        <widget class="QPushButton" name="pushButton_3">
         <property name="sizePolicy">
          <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
@@ -183,10 +102,6 @@ QPushButton:pressed{
         </property>
         <property name="text">
          <string>设置</string>
-        </property>
-        <property name="icon">
-         <iconset>
-          <normaloff>../../14-video.ico</normaloff>../../14-video.ico</iconset>
         </property>
         <property name="default">
          <bool>false</bool>

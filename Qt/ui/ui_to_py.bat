@@ -3,6 +3,5 @@
 
 
 python  -m PyQt5.uic.pyuic  Video.ui  -o  Video.py
-python  -m PyQt5.uic.pyuic  database.ui  -o  database.py
 python  -m PyQt5.uic.pyuic  set.ui  -o  set.py
 python  -m PyQt5.uic.pyuic  Mainwindow.ui  -o  Mainwindow.py

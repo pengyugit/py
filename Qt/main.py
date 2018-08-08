@@ -3,44 +3,42 @@ from PyQt5 import QtCore, QtGui, QtWidgets
 from ui.Mainwindow import Ui_MainWindow
 from m_video import Video
 from m_set import Set
-from m_db import Db
+#from m_db import Db
 
 class Main(QtWidgets.QMainWindow,Ui_MainWindow):
     def __init__(self, parent=None):
         super(Main, self).__init__(parent)
-        self.setWindowTitle("地面接收软件")  ##设置窗口标题
+        self.setWindowTitle("地面接收软件") 
         self.setupUi(self)
-        self.resize(1300,700)
-       # self.showMaximized()
+        self.resize(1366,768)
+        self.showMaximized()
 
         self.child1 = Video()
-        self.child2 = Db()
         self.child3 = Set()
-        self.pushButton.clicked.connect(self.Db)
         self.pushButton_2.clicked.connect(self.Video)
         self.pushButton_3.clicked.connect(self.Set)
-        self.pushButton_4.clicked.connect(self.Home)
-
+        #self.pushButton_4.clicked.connect(self.Home)
+        self.Video()
 
     def Set(self):
-        self.gridLayout.removeWidget(self.label)
+       # self.gridLayout.removeWidget(self.label)
         self.gridLayout.addWidget(self.child3)
         self.child1.hide()
-        self.child2.hide()
+       # self.child2.hide()
         self.child3.show()
 
 
     def Home(self):
         self.gridLayout.addWidget(self.label)
         self.child1.hide()
-        self.child2.hide()
+        #self.child2.hide()
         self.child3.hide()
 
 
     def Video(self):
-        self.gridLayout.removeWidget(self.label)
+       # self.gridLayout.removeWidget(self.label)
         self.gridLayout.addWidget(self.child1)
-        self.child2.hide()
+        #self.child2.hide()
         self.child3.hide()
         self.child1.show()
         
@@ -50,7 +48,7 @@ class Main(QtWidgets.QMainWindow,Ui_MainWindow):
         self.gridLayout.addWidget(self.child2)
         self.child1.hide()
         self.child3.hide()
-        self.child2.show()
+        #self.child2.show()
     
 
     def closeEvent(self, event):
@@ -65,7 +63,7 @@ class Main(QtWidgets.QMainWindow,Ui_MainWindow):
             event.ignore()
         else:
             self.child1.close()
-            self.child2.close()
+        #    self.child2.close()
             self.child3.close()
             event.accept()
 
