@@ -1,0 +1,309 @@
+<!DOCTYPE html>
+<html>
+<head>
+   <title>视觉教学管理平台</title>
+   <link rel="stylesheet" href="{{ url_for('static', filename='css/bootstrap.min.css') }}">
+   <link rel="stylesheet" href="{{ url_for('static', filename='css/my.css') }}">
+   <link rel="stylesheet" href="{{ url_for('static', filename='js/jquery-3.3.1.min.js') }}">
+   <link rel="stylesheet" href="{{ url_for('static', filename='js/bootstrap.min.js') }}">
+<style>
+ #con2{
+  padding-left: 10%;
+    padding-right:  10%;
+}
+#page{
+		font-family:"微软雅黑";
+          font-size: 30px;  
+          color: rgb(50,50,50); 
+     } 
+#font{
+		font-family:"微软雅黑";
+          font-size: 20px;  
+          color: rgb(90,90,90); 
+         
+     } 
+#zc{
+     background-color: rgba(200,200,210, 0.80); 
+
+     font-family:"微软雅黑";
+
+       font-size: 18px;  
+  }
+  #font2{
+		font-family:"微软雅黑";
+          font-size: 20px;  
+          color: rgb(50,80,120); 
+         font-weight:bold;
+     } 
+   @font-face {
+  font-family: 'Glyphicons Halflings';
+  src: url('css\\glyphicons-halflings-regular.eot');
+  src: url('css\\glyphicons-halflings-regular.eot?#iefix') format('embedded-opentype'), url('css\\glyphicons-halflings-regular.woff2') format('woff2'), url('css\\glyphicons-halflings-regular.woff') format('woff'), url('css\\glyphicons-halflings-regular.ttf') format('truetype'), url('css\\glyphicons-halflings-regular.svg#glyphicons_halflingsregular') format('svg');
+  }
+     #denglu {
+	font-family:"宋体";
+    background-color: rgba(20, 20, 20, 0.40);
+    color: #fff;
+    margin: 0px;
+    padding: 8px;
+    border-radius: 15px;
+    width:365px;;
+ border:none ;
+   
+	}
+ #id3{
+
+    background-image: url('/static/img/1.jpg');
+}
+ #id4{
+	padding-left: 0px;
+letter-spacing:3px;
+         font-family:"微软雅黑";
+    font-size: 45px;  
+         color:rgba(250, 250, 250, 0.80);
+}
+ #col1{
+    padding-left: 50px;
+    
+
+}
+ #zhuce{
+      font-family:"宋体";
+    font-size: 15px;  
+      color: #000;
+    
+
+}
+
+ </style>
+ 
+ 
+ <script type="text/javascript">
+ $(function(){
+ 	$("#zcbutton").click(function() {
+	            $.ajax({
+	                url : "regist.do",
+	                type : "POST",
+	                dataType:"json",
+	                contentType : "application/json;charset=UTF-8",
+	               //向后端传输的数据
+	                data : JSON.stringify({
+	                    name: $("#name").val(),	
+	                    id: $("#id").val(),
+	                    phone: $("#phone").val(),
+	                    password1: $("#password1").val(),
+	                    password2: $("#password2").val(),
+	                    major1: $("#major1").val(),
+	                    	
+	                }),             
+	            	success:function(result) {
+	                    alert(result.result);
+	                    if(result.result == "注册成功！"){
+	                    	 $('#zhuce').modal('hide');
+	                    }
+	                },
+	                error:function(result){
+	                	alert("错误error");
+	                }
+	            });
+	        });
+ 	$("#te").click(function() {
+        $.ajax({
+            url : "login.do",
+            type : "POST",
+            dataType:"json",
+            contentType : "application/json;charset=UTF-8",
+           //向后端传输的数据
+            data : JSON.stringify({
+            	user: $("#user").val(),	
+            	pass: $("#pass").val(),
+	
+            }),             
+        	success:function(result) {
+        		location.href="home";
+            },
+            error:function(result){
+            	alert("账号或密码错误");
+            }
+        });
+    });
+ });
+ 	</script>
+</head>
+<body >
+
+
+    <!--pc导航栏-->
+<nav class="navbar-inverse visible-sm visible-lg visible-md" role="navigation">
+	<div class="container">
+		<div class="navbar-header">
+			<a class="navbar-brand" >常用网站</a>
+		</div>
+		<div>
+			<ul class="nav navbar-nav">
+				<li class="active"><a href="#">视觉教学管理云平台</a></li>
+				<li><a href="https://opencv.org/" >OpenCV</a></li>
+				<li><a href="http://geek.csdn.net/forum/123">CSDN计算机视觉 </a></li>
+				<li><a href="http://cvrs.whu.edu.cn/">武汉大学计算机视觉与遥感实验室 </a></li> 
+			</ul>
+		</div>
+	</div>
+</nav>
+
+
+
+<div id="id3" class="container-fluid">
+		<div class="row clearfix">
+	
+	<div class="col-md-2 col-sm-0 column" ></div>
+	<div class="col-md-5 col-sm-6 column" >
+	<br><br><br>
+			<h1 id="id4">
+				视觉教学管理云平台
+			</h1>
+	</div>
+
+	<div id=col1 class="col-md-5 col-sm-6 column">
+		<br><br><br><br><br><br><br><br><br><br><br>
+		
+			<div id="denglu" class="panel panel-default">
+    <div class="panel-body">
+ 
+					<input class="form-control" type="text" id="user" name="user" placeholder="学号" style=" background:transparent;border:none #FFFFFF; border-bottom:#777777 solid 1px;margin-top: 10px;" > 	
+
+					<input class="form-control" type="password" id="pass" name="pass" placeholder="密码" style="background:transparent;border:none #FFFFFF; border-bottom:#777777 solid 1px;margin-top: 10px;" > 	
+			
+		            <div class="row">
+		             <div class="form-inline">  
+					
+					
+					<div class="col-sm-6" align="left">
+						  <a id="modal-414743" href="#zhuce" role="button" class="btn" data-toggle="modal" style="width:15%;margin-top: 10px;">用户注册</a>
+					</div>
+							
+					<div class="col-sm-6" align="right">
+					
+						 <a class="btn" href="#" style="margin-top: 10px;">忘记密码？</a>
+					</div>
+				 </div>
+				</div>
+					 <button id="te" class="btn btn-default btn-primary btn-lg btn-block" style="margin-top: 10px;">登陆</button>
+					 	
+				
+    </div>
+</div>
+				<br><br><br><br><br><br>
+		</div>
+
+<div class="modal fade" id="zhuce" role="dialog"  aria-hidden="true" style="margin-top: 130px;">
+								<div class="modal-dialog" style="width:27%;">
+									<div class="modal-content"   id="zc"   >
+										<div class="modal-header">
+											 <button type="button" class="close" data-dismiss="modal" aria-hidden="true">×</button>
+											<h4 class="modal-title"id="font2" >用户注册</h4>
+										</div>
+										<div class="modal-body" >
+										
+										      <table style="border-collapse:separate; border-spacing:0px 1px;padding-left:10%;"  class="table" >
+										      	  <tr >
+										            <td style="border:0;"height="29" align="center" >姓&nbsp;&nbsp;&nbsp;&nbsp;名：</td>
+										            <td style="border:0;" colspan="2"><input name="name" type="text" id="name" ></td>
+										          </tr>
+										          <tr>
+										            <td style="border:0;" height="29" align="center">学&nbsp;&nbsp;&nbsp;&nbsp;号：</td>
+										            <td style="border:0;"colspan="2"><input name="id" type="text" id="id" ></td>
+										          </tr>
+										           <tr>
+										            <td  style="border:0;"height="28" align="center" >专&nbsp;&nbsp;&nbsp;&nbsp;业：</td>
+										            <td style="border:0;"height="28" colspan="2"><input id="major1" name="text" type="text"  size="20" maxlength="20"> </td>
+										          </tr>
+										          <tr>
+										            <td style="border:0;"height="28" align="center">密&nbsp;&nbsp;&nbsp;&nbsp;码：</td>
+										            <td style="border:0;"height="28" colspan="2"><input name="password1" type="password" id="password1" size="20" maxlength="20"></td>
+										          </tr>
+										          <tr>
+										            <td style="border:0;"height="28" align="center">确认密码：</td>
+										            <td style="border:0;"height="28" colspan="2"><input name="password2" type="password" id="password2" size="20" maxlength="20"></td>
+										          </tr>
+										
+	
+										      </table>
+											
+										</div>
+										<div class="modal-footer">
+											 <button type="button" class="btn btn-default" data-dismiss="modal">关闭</button> <button id="zcbutton"type="button" class="btn btn-primary">注册</button>
+										</div>
+									</div>
+									
+								</div>
+							</div>
+	</div>
+</div>
+
+<br>
+	
+		
+<div id="con2" class="container-fluid">
+	<div class="row clearfix">
+	
+		<div class="col-md-4 column">
+		<div class="col-sm-2" >
+		<img src="/static/img/7.png"   style="width:60px;height:60px;"/>
+		</div>
+			<div class="col-sm-9" align="left">
+					
+			<h2 id="page" style="padding-left: 8px;">
+				任务管理
+			</h2>
+			</div>
+			<div class="col-sm-12" id="font" >
+				<p >&nbsp;&nbsp;&nbsp;<span class="glyphicon  glyphicon-check" >&nbsp;&nbsp;&nbsp;</span>任务安排</p>
+				<p>&nbsp;&nbsp;&nbsp;<span class="glyphicon  glyphicon-check" >&nbsp;&nbsp;&nbsp;</span>任务查询</p>
+				<p>&nbsp;&nbsp;&nbsp;<span class="glyphicon  glyphicon-check" >&nbsp;&nbsp;&nbsp;</span>作业提交</p>
+			
+		</div>
+		</div>
+		<div class="col-md-4 column">
+		<div class="col-sm-2" >
+		<img src="/static/img/5.png" style="width:60px;height:60px;"/>
+		</div>
+			<div class="col-sm-9" align="left">
+					
+			<h2 id="page" style="padding-left: 7px;">
+				课程学习
+			</h2>
+			</div>
+			<div class="col-sm-12" id="font">
+				<p >&nbsp;&nbsp;&nbsp;<span class="glyphicon  glyphicon-check" >&nbsp;&nbsp;&nbsp;</span>演示PPT</p>
+				<p>&nbsp;&nbsp;&nbsp;<span class="glyphicon  glyphicon-check" >&nbsp;&nbsp;&nbsp;</span>视频教学</p>
+				<p>&nbsp;&nbsp;&nbsp;<span class="glyphicon  glyphicon-check" >&nbsp;&nbsp;&nbsp;</span>在线练习</p>
+
+		</div>
+		</div>
+		<div class="col-md-4 column">
+		<div class="col-sm-2" >
+		<img src="/static/img/20.png"    style="width:60px;height:60px;"/>
+		</div>
+			<div class="col-sm-9" align="left">
+					
+			<h2 id="page" style="padding-left: 7px;">
+				实验演示
+			</h2>
+			</div>
+			<div class="col-sm-12" id="font">
+			
+				<p >&nbsp;&nbsp;&nbsp;<span class="glyphicon  glyphicon-check" >&nbsp;&nbsp;&nbsp;</span>摄像头演示</p>
+				<p>&nbsp;&nbsp;&nbsp;<span class="glyphicon  glyphicon-check" >&nbsp;&nbsp;&nbsp;</span></p>
+				<p>&nbsp;&nbsp;&nbsp;<span class="glyphicon  glyphicon-check" >&nbsp;&nbsp;&nbsp;</span>代码下载</p>
+		</div>
+		</div>
+		
+	</div>
+
+</div>
+<br><br><br>
+<div >
+		<p align="center" style="color:#ADADAD;">Copyright &copy; 2018-2019 郑州信大先进技术研究院 版权所有 </p>
+</div>
+</body>
+</html>

@@ -1,0 +1,437 @@
+<html>
+<head>
+   <title>视觉教学管理云平台</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/bootstrap.min.css') }}">
+    <!-- <link rel="stylesheet" href="{{ url_for('static', filename='css/my.css') }}"> -->
+    <link rel="stylesheet" href="{{ url_for('static', filename='js/jquery-3.3.1.min.js') }}">
+    <link rel="stylesheet" href="{{ url_for('static', filename='js/bootstrap.min.js') }}">
+
+    <link href="static/css/fileinput.min.css" media="all" rel="stylesheet" type="text/css"/>
+    <script src="static/js/fileinput.min.js" type="text/javascript"></script>
+ 	<script src="static/js/zh.js" type="text/javascript"></script>
+ <style>
+	 @font-face {
+    font-family: 'Glyphicons Halflings';
+    src: url('/static/css/glyphicons-halflings-regular.eot');
+    src: url('/static/css/glyphicons-halflings-regular.eot?#iefix') format('embedded-opentype'),
+         url('/static/css/glyphicons-halflings-regular.woff2') format('woff2'), 
+         url('/static/css/glyphicons-halflings-regular.woff') format('woff'), 
+         url('/static/css/glyphicons-halflings-regular.ttf') format('truetype'), 
+         url('/static/css/lyphicons-halflings-regular.svg#glyphicons_halflingsregular') format('svg');
+    }
+    
+  .page,#result11,#result12{
+          font-family:"微软雅黑";
+            font-size: 25px;  
+            color: rgb(80,80,80); 
+       } 
+  #page1{
+          font-family:"微软雅黑";
+            font-size: 15px;  
+            color: rgb(150,150,150); 
+       } 
+  #page2{
+          font-family:"微软雅黑";
+            font-size: 18px;  
+            color: rgb(70,70,70); 
+       } 
+	 #b1,#b12,#b13{
+border:none #FFFFFF;
+font-family:"微软雅黑";
+background-color: rgb(45,35,30);   
+font-size: 15px; 
+    color:  rgb(250,250,250);   
+    text-align:left;
+    padding-left:  18%; 
+        margin : 0px;
+        width:160px;
+        height:43px;
+        font-weight:bold;
+} 
+  #b2,#b21,#b2car{
+  border:none #FFFFFF;
+  font-family:"微软雅黑";
+  background-color: rgb(45,35,30);   
+  font-size: 14px; 
+      color:  rgb(220,220,220); 
+      text-align:left;
+      padding-left:  32%;
+       margin : 0px;
+       width:160px;
+       height:42px;
+  }
+  #b3{
+  border:none #FFFFFF;
+  font-family:"微软雅黑";
+  background-color: rgb(35,30,25);   
+  font-size: 14px; 
+      color:  rgb(220,220,220);  
+      text-align:left;
+      padding-left:  32%;
+       margin : 0px;
+       width:160px;
+       height:42px;
+  }
+  #tree {
+      font-family:"微软雅黑";
+      z-index: 9999; 
+      font-size: 15px; 
+      padding-left:  0px; 
+      width:160px; 
+      position: fixed ! important; 
+      left: 0px;
+      bottom: 0px;
+      top:47px; 
+      margin : 0px;
+     background-color: rgb(45,35,30);  
+      color: #fff;
+  
+  }
+  #title{
+   z-index: 9999; 
+   position: fixed ! important; 
+      left: 0px;
+      right: 0px;
+      top:0px; 
+      height:47px;
+      background-color: rgb(40,30,25);  
+      color:  rgb(190,190,190);
+      font-family:"微软雅黑";
+       font-size: 22px;  
+  }
+#show2,#show3,#cali-form{
+ display:none;
+}
+ </style>
+
+<script type="text/javascript">
+
+//初始化fileinput控件（第一次初始化）
+function initFileInput(ctrlName, uploadUrl) {
+    var control = $('#' + ctrlName);
+    control.fileinput({
+        language: 'zh', //设置语言
+        uploadUrl: uploadUrl, //上传的地址
+        showCaption: true,
+        uploadAsync: true,
+        maxFileCount: 1,   
+        allowedFileExtensions : ['jpg', 'png'],//接收的文件后缀
+        //uploadAsync: false, //插件支持同步和异步
+       // showUpload: false, //是否显示上传按钮
+    }).on("fileuploaded", function(event, data) {  
+    	  console.log(data);
+
+    });
+}
+
+$(function(){
+	
+	$("#b12").click(function(){
+		 if ($("#cali-form").is(':visible')) {
+	        	$("#cali-form").slideToggle("slow");
+	        }      
+		 if ($("#show3").is(':visible')) {
+			  $("#show3").slideToggle("slow");
+	        }   
+
+		  $("#show2").slideToggle("slow");
+	});
+	$("#b13").click(function(){
+		 if ($("#cali-form").is(':visible')) {
+	        	$("#cali-form").slideToggle("slow");
+	        }      
+		 if ($("#show2").is(':visible')) {
+			  $("#show2").slideToggle("slow");
+	        }   
+
+		  $("#show3").slideToggle("slow");
+	});
+	$("#b21").click(function(){   
+		  $("#cali-form").slideToggle("slow");
+	});
+	$("#b2car").click(function(){   
+		//  $("#cali-form").slideToggle("slow");
+	});
+	
+	
+});
+
+</script>
+
+</head>
+<body style="background-color:rgb(240,238,236);  padding-top: 47px; padding-left:  0px; ">
+<div class="container-fluid" style="padding-left:  0px; ">
+<div id="title" class="container-fluid"> 
+		<div class="row clearfix">
+			<div class="col-md-3 col-sm-6 col-xs-6 column" style="padding-top: 8px;"> <span  class="glyphicon glyphicon-cloud"  ></span>&nbsp;视觉教学管理云平台</div>
+			<div class="col-md-6 " > </div>
+		    <div class="col-md-3 col-sm-6 col-xs-6 column" align="right"  style="font-size: 18px;padding-top: 12px;padding-right: 20px;">       
+		    <span class="glyphicon glyphicon-user" aria-hidden="true" class="text-right"></span>&nbsp;{{name}}&nbsp;&nbsp;
+		     <a href="logout.do" style="color: rgb(220,20,20);font-size: 17px;"><span class="glyphicon glyphicon-off" class="text-right"></span>&nbsp;注销</a></div>             
+		</div>   
+</div>
+
+
+
+
+<div  id="tree"  >  
+		<form method="get" action="home.do">
+		<button id="b1"  style="color:rgb(255,0,0);"onClick="show('show1')"  ><span class="glyphicon glyphicon-home" ></span>&nbsp;&nbsp;个人中心</button>
+		</form>
+		<form method="get" action="listpeople.do">
+		<button id="b1" ><span class="glyphicon glyphicon-education" ></span>&nbsp;&nbsp;学生管理</button>
+		</form>
+		<button id="b12" onClick="show('show2')" type="submit" ><span class="glyphicon glyphicon-book" ></span>&nbsp;&nbsp;课程学习</button>
+		<div id="show2">
+		<form method="get" action="study_basics.jsp">
+		<button id="b2" type="submit" >基础知识</button>
+		</form><form method="get" action="study_imgprc.jsp">
+		<button id="b2" type="submit"  >图像处理</button>
+		</form><form method="get" action="study_objdec.jsp">
+		<button id="b2" type="submit"  >目标识别</button>
+		</form><form method="get" action="study_3d.jsp">
+		<button id="b2" type="submit" >三维重建</button>
+		</form><form method="get" action="study_navigation.jsp">
+		<button id="b2" type="submit"  >视觉导航</button></form>
+		</div>
+		<button id="b13"  onClick="show('show3')" ><span class="glyphicon glyphicon-facetime-video"  ></span>&nbsp;&nbsp;实验演示</button>
+		<div id="show3">
+		<form method="get" action="imgProc.jsp">
+		<button id="b2" type="submit"  >图像处理</button>
+		</form>
+		<form method="get" action="objdec.jsp">	
+		<button id="b2" type="submit" >目标识别</button>
+		</form>
+		<form method="get" action="calibration1.jsp">
+		<button id="b21" >相机标定</button>
+		</form>
+		<form method="get" action="measure.jsp">
+		<button id="b2" type="submit"  >位姿解算</button>
+		</form>
+			<form method="get" action="rec3d.jsp">
+		<button id="b2" type="submit" >三维重建</button>
+		</form>
+		</div>
+		<form method="get" action="down.jsp">
+		<button id="b1" ><span class="glyphicon glyphicon-save" ></span>&nbsp;&nbsp;资料下载</button>
+		</form>
+		<button id="b1" ><span class="glyphicon glyphicon-question-sign" ></span>&nbsp;&nbsp;帮助中心</button>
+		</div>
+
+ 
+
+
+<div class="row"  style="padding-left: 210px;padding-right: 30px; padding-top: 45px; ">
+
+			<div  class="col-xs-12"    style="padding-right:30px;padding-buttom:50px;padding-left:50px;padding-top:100px;background-color:rgb(255,255,255);height:350px" >
+				<div  class="col-xs-2" style="padding-left:20px;">	
+					<img src="/static/img/user.png"  style="width:160px;height:160px;" >
+				</div>
+			
+			<div  class="col-xs-10" style="padding-top:17px;">	
+					<div class="page" style="padding:5px;">	
+						{{name}}，你好！  欢迎使用视觉教学管理云平台
+					</div>
+					<table class="table"   style="margin-top:15px;">	
+							<tr>
+				                <td style="border:0;"><span id="page1">学号：</span>{{id}}</td>
+				                <td style="border:0;"><span id="page1">专业：</span>{{major}}</td>
+				           <td style="border:0;"><span id="page1">注册时间：</span>{{time}}</td>
+				            </tr>
+				              <tr>
+				            </tr>
+					</table>
+					
+					<div style="padding-left:8px;color:rgb(255,0,0);"><span class=" glyphicon glyphicon-volume-up" ></span>&nbsp;&nbsp;本节任务：{{renwu}}  </div>
+				</div>
+			</div>
+
+
+
+			<div  class="col-xs-6"    style="padding:50px;margin-top:1.2%;margin-right:1.2%;width:48.8%; background-color:rgb(255,255,255);height:170px" >
+				<div  class="col-xs-1"  ><img src="/static/img/mession.png" style="width:62px;height:62px;"></div>
+				<div  class="col-xs-5"  ><div id="page2"style="padding-top:20px;padding-left:24px;">任务安排</div></div>
+		 		<div  class="col-xs-6"  style="padding-top:20px;"align="right"><a href="#anpai" data-toggle="modal" ><button  type="button"  class="btn btn-default" >点击安排</button></a></div>
+			</div>
+
+																
+			<div  class="col-xs-6"    style="padding:50px;margin-top:1.2%;width:50%; background-color:rgb(255,255,255);height:170px" >
+				<div  class="col-xs-1"  ><img src="/static/img/task.png"  style="width:58px;height:58px;"></div>
+				<div  class="col-xs-5"  ><div id="page2"style="padding-top:20px;padding-left:24px;">作业提交</div></div>
+		 		<div  class="col-xs-6"   style="padding-top:20px;"align="right"><a href="#zuoye" data-toggle="modal" ><button type="button" class="btn btn-default" >点击提交</button></a></div>
+		 
+			</div>
+			
+			
+			<div  class="col-xs-6"    style="padding:50px;margin-right:1.2%;width:48.8%; margin-top:1.2%;background-color:rgb(255,255,255);height:170px" >
+				<div  class="col-xs-1"  ><img src="/static/img/password.png"  style="width:58px;height:58px;" ></div>
+				<div  class="col-xs-5"  ><div id="page2"style="padding-top:20px;padding-left:24px;">密码管理 </div></div>
+		 		<div  class="col-xs-6"   style="padding-top:20px;"align="right"><a href="#mima" data-toggle="modal" ><button type="button" class="btn btn-default" >修改密码</button></a></div>
+			</div>
+
+			<div  class="col-xs-6"    style="padding:50px;width:50%;margin-top:1.2%; background-color:rgb(255,255,255);height:170px" >
+				<div  class="col-xs-1"  ><img src="/static/img/liuyan.png"  style="width:60px;height:60px;" ></div>
+				<div  class="col-xs-5"  ><div id="page2"style="padding-top:20px;padding-left:24px;">在线留言</div></div>
+		 		<div  class="col-xs-6"   style="padding-top:20px;"align="right"><button type="button" class="btn btn-default" >立即查看</button></div>
+			</div>
+
+</div>
+
+<div class="modal fade" id="anpai" role="dialog"  aria-hidden="true" style="margin-top: 14%;">
+		<div class="modal-dialog" style="width:27%;">
+			<div class="modal-content"   >
+				<div class="modal-header">
+					 <button type="button" class="close" data-dismiss="modal" aria-hidden="true">×</button>
+					<h4 class="modal-title"id="font2" >任务安排</h4>
+				</div>
+				<div class="modal-body" >
+					<input id="jaj" type="text" style="width: 100%; height: 60px">  											
+				</div>
+				<div class="modal-footer">
+					
+				<button id="xz" type="button" class="btn btn-primary" data-dismiss="modal">确认</button>
+	 <script type="text/javascript">				
+$(function(){
+	$("#xz").click(function() {
+
+        $.ajax({
+            url : "renwu.do",
+            type : "POST",
+            dataType:"json",
+            contentType : "application/json;charset=UTF-8",
+           //向后端传输的数据
+            data : JSON.stringify({
+            	anpai: $("#jaj").val(),	
+            }),             
+        	success:function(result) {
+        		location.href="home";
+            },
+            error:function(result){
+            //	alert("错误error");
+            }
+        });
+    });
+});
+</script>
+				</div>
+			</div>
+			
+		</div>
+	</div>
+							
+							
+<div class="modal fade" id="mima" role="dialog"  aria-hidden="true" style="margin-top: 14%;">
+		<div class="modal-dialog" style="width:27%;">
+			<div class="modal-content"   >
+				<div class="modal-header">
+					 <button type="button" class="close" data-dismiss="modal" aria-hidden="true">×</button>
+					<h4 class="modal-title"id="font2" >修改密码</h4>
+				</div>
+				<div class="modal-body" >
+					  <table style="border-collapse:separate; border-spacing:0px 1px;padding-left:10%;"  class="table" >
+										      	  <tr >
+										            <td style="border:0;"height="29" align="center" >原密码：</td>
+										            <td style="border:0;" colspan="2"><input name="password0" type="text" id="password0" ></td>
+										          </tr>
+								
+										          <tr>
+										            <td style="border:0;"height="28" align="center">新密码：</td>
+										            <td style="border:0;"height="28" colspan="2"><input name="password1" type="password" id="password1" size="20" maxlength="20"></td>
+										          </tr>
+										          <tr>
+										            <td style="border:0;"height="28" align="center">确认密码：</td>
+										            <td style="border:0;"height="28" colspan="2"><input name="password2" type="password" id="password2" size="20" maxlength="20"></td>
+										          </tr>
+				
+										      </table>  	
+										
+				</div>
+				<div class="modal-footer">
+					
+				<button id="mim1" type="button" class="btn btn-primary" >修改</button>
+				 <script type="text/javascript">
+
+
+$(function(){
+	$("#mim1").click(function() {
+        $.ajax({
+            url : "changpassword.do",
+            type : "POST",
+            dataType:"json",
+            contentType : "application/json;charset=UTF-8",
+           //向后端传输的数据
+            data : JSON.stringify({
+            	   password0: $("#password0").val(),	
+            	   password1: $("#password1").val(),	
+            	   password2: $("#password2").val(),	
+            }),             
+            success: function (result) {
+            	 alert(result.result);
+                 if(result.result == "修改成功！"){
+                	 $('#mima').modal('hide');
+                 }
+        		
+            },
+            error:function(result){
+            	alert("修改失败");
+            }
+        });
+    });
+});
+</script>
+				</div>
+			</div>
+			
+		</div>
+	</div>
+	
+	
+<div class="modal fade" id="zuoye" role="dialog"  aria-hidden="true" style="margin-top: 14%;">
+		<div class="modal-dialog" style="width:27%;">
+			<div class="modal-content"   >
+				<div class="modal-header">
+					 <button type="button" class="close" data-dismiss="modal" aria-hidden="true">×</button>
+					<h4 class="modal-title"id="font2" >作业提交</h4>
+				</div>
+				<div class="modal-body" >
+						
+				<form><input type="file" id="homework" onchange ="uploadFile()">  </form>	 										
+				</div>
+				
+				<script type="text/javascript">
+				let inputElement2 = document.getElementById('homework');
+				inputElement2.addEventListener('change', (e) => {
+					 var formFile2 = new FormData();
+		               formFile2.append("file", document.getElementById("homework").files[0]); //加入文件对象
+		               $.ajax({
+		                   url: "homework.do",
+		                   data: formFile2,
+		                   encType: 'multipart/form-data', //表明上传类型为文件
+		                   type: "Post",
+		                   dataType: "json",
+		                   cache: false,//上传文件无需缓存
+		                   processData: false,//用于对data参数进行序列化处理 这里必须false
+		                   contentType : false,
+		                   success: function (result) {
+		                		alert("上传成功");
+		                		 $('#zuoye').modal('hide');
+			                },
+			                error:function(result){
+			                	alert("上传失败");
+			                }
+		               })    
+				}, false);
+		</script>
+	
+			</div>
+			
+		</div>
+	</div>							
+									
+											
+</div>
+</body>
+</html>
+
+
+ 
