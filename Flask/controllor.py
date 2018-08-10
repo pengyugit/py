@@ -2,7 +2,7 @@ import numpy as np
 from flask import Flask, make_response,Response,request,jsonify,render_template
 import cv2
 import base64
-
+from serviceImpl import ServiceImpl
 # from keras.models import load_model
 # #先预测一次防止keras报错
 # model = load_model('static/mnist.h5')
@@ -21,14 +21,39 @@ app = Flask(__name__)
 def index():
     return render_template('index.html')
 
+@app.route('/login')
+def login():
+    print("ss")
+    Iservice = ServiceImpl()
+    if Iservice.login():
+        return render_template('home.html')
+    else:
+        d = {'name': 'xmr', 'age': 18}
+        return jsonify(d)
+     
+
 @app.route('/home')
 def home():
-    return render_template('home.html', name='py',id='201622362013271',major='自动化',time='2018-04-26 15:07:27',renwu='')
+    context={
+        'name':"py",
+        'id': "201622362013271",
+        'major': "自动化",
+        'time': "2018-04-26 15:07:27",
+        'renwu': "s",
+    }
+    return render_template('home.html', **context)
+  #  return render_template('home.html', name='py',id='201622362013271',major='自动化',time='2018-04-26 15:07:27',renwu='')
 
 
 
 
+@app.route('/paper')
+def paper():
+    Iservice = ServiceImpl()
+    
+    
 
+    return render_template('paper.html', name='py',id='201622362013271',major='自动化',time='2018-04-26 15:07:27',renwu='')
 
 
 

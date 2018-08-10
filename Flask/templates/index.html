@@ -4,8 +4,9 @@
    <title>视觉教学管理平台</title>
    <link rel="stylesheet" href="{{ url_for('static', filename='css/bootstrap.min.css') }}">
    <!-- <link rel="stylesheet" href="{{ url_for('static', filename='css/my.css') }}"> -->
-   <link rel="stylesheet" href="{{ url_for('static', filename='js/jquery-3.3.1.min.js') }}">
-   <link rel="stylesheet" href="{{ url_for('static', filename='js/bootstrap.min.js') }}">
+
+   <script  src="{{url_for('static', filename='js/jquery-3.3.1.min.js') }}"></script>
+   <script  src="{{ url_for('static', filename='js/bootstrap.min.js') }}"></script>
 <style>
  #con2{
   padding-left: 10%;
@@ -113,10 +114,10 @@ letter-spacing:3px;
 	        });
  	$("#te").click(function() {
         $.ajax({
-            url : "login.do",
-            type : "POST",
-            dataType:"json",
-            contentType : "application/json;charset=UTF-8",
+            url : "/login",
+           // type : "POST",
+            // dataType:"json",
+            // contentType : "application/json;charset=UTF-8",
            //向后端传输的数据
             data : JSON.stringify({
             	user: $("#user").val(),	
@@ -124,13 +125,20 @@ letter-spacing:3px;
 	
             }),             
         	success:function(result) {
-        		location.href="home";
+        		alert("1");
             },
             error:function(result){
             	alert("账号或密码错误");
             }
         });
     });
+
+// 	$("te").click(function(){
+//       $.get("/login",function(data, status){
+//          alert("数据: " + data + "\n状态: " + status);
+//       });
+//    });
+
  });
  	</script>
 </head>
@@ -172,7 +180,7 @@ letter-spacing:3px;
 		
 			<div id="denglu" class="panel panel-default">
     <div class="panel-body">
- 
+	
 					<input class="form-control" type="text" id="user" name="user" placeholder="学号" style=" background:transparent;border:none #FFFFFF; border-bottom:#777777 solid 1px;margin-top: 10px;" > 	
 
 					<input class="form-control" type="password" id="pass" name="pass" placeholder="密码" style="background:transparent;border:none #FFFFFF; border-bottom:#777777 solid 1px;margin-top: 10px;" > 	
@@ -191,7 +199,8 @@ letter-spacing:3px;
 					</div>
 				 </div>
 				</div>
-					 <button id="te" class="btn btn-default btn-primary btn-lg btn-block" style="margin-top: 10px;">登陆</button>
+					 <button type="submit" id="te" class="btn btn-default btn-primary btn-lg btn-block" style="margin-top: 10px;">登陆</button>
+			
 					 	
 				
     </div>
