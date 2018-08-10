@@ -1,15 +1,20 @@
 import numpy as np
-#import tensorflow as tf
 from flask import Flask, make_response,Response,request,jsonify,render_template
 import cv2
 import base64
-#from mnist import model1
-#from keras.models import load_model
-from PIL import Image  
+
+# from keras.models import load_model
+# #先预测一次防止keras报错
+# model = load_model('static/mnist.h5')
+# img = cv2.imread('static/img/2.png', 0)
+# img = cv2.resize(img, (28, 28))
+# img = (1 - np.array(img) / 255.0).reshape([-1, 28, 28, 1])
+# model.predict(img)[0].tolist()
 
 
 # webapp
 app = Flask(__name__)
+
 
 
 @app.route('/')
@@ -30,25 +35,11 @@ def home():
 
 
 
-
-
-
-
-
-
-
-
-
-
-
-
-
 @app.route('/api/mnist', methods=['POST'])
 def mnist():
     X = (1- np.array(request.json, dtype=np.uint8)/ 255.0).reshape([-1, 28, 28, 1])
-    output=model_keras.predict(X)[0].tolist()
+    output=model.predict(X)[0].tolist()
     return jsonify(results=[output])
-
 
 @app.route("/upload",methods=['POST'])
 def uploa2d():
@@ -62,8 +53,5 @@ def uploa2d():
 
     
 
-    
-
 if __name__ == '__main__':
-    #app.run(host='0.0.0.0')
     app.run(debug=True, host='0.0.0.0')

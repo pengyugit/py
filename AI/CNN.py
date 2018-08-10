@@ -6,7 +6,7 @@ from keras.layers import Conv2D, MaxPooling2D
 from keras.optimizers import Adam
 from keras.models import load_model
 import cv2
-from DataSet import My_h5py
+from DataSet import *
 
 
 def model1(class_num, img_w, img_h, channel=1):

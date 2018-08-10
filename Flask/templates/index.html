@@ -3,7 +3,7 @@
 <head>
    <title>视觉教学管理平台</title>
    <link rel="stylesheet" href="{{ url_for('static', filename='css/bootstrap.min.css') }}">
-   <link rel="stylesheet" href="{{ url_for('static', filename='css/my.css') }}">
+   <!-- <link rel="stylesheet" href="{{ url_for('static', filename='css/my.css') }}"> -->
    <link rel="stylesheet" href="{{ url_for('static', filename='js/jquery-3.3.1.min.js') }}">
    <link rel="stylesheet" href="{{ url_for('static', filename='js/bootstrap.min.js') }}">
 <style>
@@ -35,10 +35,14 @@
           color: rgb(50,80,120); 
          font-weight:bold;
      } 
-   @font-face {
+	 @font-face {
   font-family: 'Glyphicons Halflings';
-  src: url('css\\glyphicons-halflings-regular.eot');
-  src: url('css\\glyphicons-halflings-regular.eot?#iefix') format('embedded-opentype'), url('css\\glyphicons-halflings-regular.woff2') format('woff2'), url('css\\glyphicons-halflings-regular.woff') format('woff'), url('css\\glyphicons-halflings-regular.ttf') format('truetype'), url('css\\glyphicons-halflings-regular.svg#glyphicons_halflingsregular') format('svg');
+  src: url('/static/css/glyphicons-halflings-regular.eot');
+  src: url('/static/css/glyphicons-halflings-regular.eot?#iefix') format('embedded-opentype'),
+        url('/static/css/glyphicons-halflings-regular.woff2') format('woff2'), 
+        url('/static/css/glyphicons-halflings-regular.woff') format('woff'), 
+        url('/static/css/glyphicons-halflings-regular.ttf') format('truetype'), 
+        url('/static/css/lyphicons-halflings-regular.svg#glyphicons_halflingsregular') format('svg');
   }
      #denglu {
 	font-family:"宋体";
@@ -303,7 +307,7 @@ letter-spacing:3px;
 </div>
 <br><br><br>
 <div >
-		<p align="center" style="color:#ADADAD;">Copyright &copy; 2018-2019 郑州信大先进技术研究院 版权所有 </p>
+		<p align="center" style="color:#ADADAD;">Copyright &copy; 2018-2019 郑州大学 版权所有 </p>
 </div>
 </body>
 </html>
