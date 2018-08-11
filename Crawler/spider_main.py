@@ -1,6 +1,5 @@
 # coding:utf8
-from baike_spider import html_outputer, url_manager, html_downloader,\
-    html_parser
+import html_outputer, url_manager, html_downloader,html_parser
 
 
 class SpiderMain(object):

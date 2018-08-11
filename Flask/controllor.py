@@ -46,14 +46,23 @@ def home():
 
 
 
-
+import pymysql
 @app.route('/paper')
 def paper():
-    Iservice = ServiceImpl()
-    
-    
+    # conn = pymysql.connect(host='127.0.0.1', user='root', password='123456', db='mydb', charset='utf8')
+    # cur = conn.cursor()
+    # sql = "SELECT * FROM student"
+    # cur.execute(sql)
+    # u = cur.fetchall()
+    # conn.close()
 
-    return render_template('paper.html', name='py',id='201622362013271',major='自动化',time='2018-04-26 15:07:27',renwu='')
+    context=(
+        ('name1','201622362013271','name','07','name','name','5','1'),
+        ('name2','201622362013271','name','07','name','name','5','2'),
+    )
+    return render_template('paper.html', u=context)
+
+    # return render_template('paper.html', name='py',id='201622362013271',major='自动化',time='2018-04-26 15:07:27',renwu='')
 
 
 
