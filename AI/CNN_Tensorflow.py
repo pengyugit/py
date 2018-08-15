@@ -1,9 +1,53 @@
 import os
 import tensorflow as tf
-from DataSet import *
+import cv2
+import numpy as np
+from PIL import Image
+
+def create_TFrecords(path, w, h,  classes_num):
+    num_classes = [i for i in range(classes_num)]
+    cwd = os.getcwd()
+    writer = tf.python_io.TFRecordWriter(path+".tfrecords")
+    for index, name in enumerate(num_classes):
+        class_path = cwd + "\\"+path+"\\" + str(name) + "\\"
+        for img_name in os.listdir(class_path):
+            img = Image.open(class_path + img_name).convert('L')  # 转化为灰度
+            img = img.resize((w, h))
+            img_raw = img.tobytes()  # 将图片转化为原生bytes
+            example = tf.train.Example(features=tf.train.Features(feature={
+                "my_labels": tf.train.Feature(int64_list=tf.train.Int64List(value=[index])),
+                'my_datas': tf.train.Feature(bytes_list=tf.train.BytesList(value=[img_raw]))
+            }))
+            writer.write(example.SerializeToString())
+    writer.close()
+    print('TFrecord创建成功')
 
 
-def convolutional(x, keep_prob):
+def read_TFrecords(filename):
+    reader = tf.TFRecordReader()
+    filename_queue = tf.train.string_input_producer([filename])
+    _, serialized_example = reader.read(filename_queue)
+    features = tf.parse_single_example(serialized_example,
+                                       features={
+                                           'my_labels': tf.FixedLenFeature([], tf.int64),
+                                           'my_datas': tf.FixedLenFeature([], tf.string), })
+    img = tf.decode_raw(features['my_datas'], tf.uint8)
+    img = tf.reshape(img, [28, 28, 1])
+    img = 1 - tf.cast(img, tf.float32) / 285.0
+    label = tf.cast(features['my_labels'], tf.int32)
+    return img, label
+
+
+def get_TFbatch(imgs, labels, n_classes, batch_size):
+    imgs_batch, labels_batch = tf.train.shuffle_batch([imgs, labels],batch_size=batch_size,capacity=2000,min_after_dequeue=1000)
+    labels_batch = tf.one_hot(labels_batch, n_classes)
+    labels_batch = tf.cast(labels_batch, dtype=tf.int64)
+    labels_batch = tf.reshape(labels_batch, [batch_size, n_classes])
+    return imgs_batch, labels_batch
+
+
+
+def convolutional(x, keep_prob, class_num, img_w, img_h, channel=1):
     def conv2d(x, W):# 卷积遍历各方向步数为1，SAME：边缘外自动补0，遍历相乘
         return tf.nn.conv2d(x, W, strides=[1, 1, 1, 1], padding='SAME')
     def max_pool_2x2(x):# 池化卷积结果（conv2d）池化层采用kernel大小为2*2，步数也为2，周围补0，取最大值。数据量缩小了4倍
@@ -15,7 +59,7 @@ def convolutional(x, keep_prob):
         initial = tf.constant(0.1, shape=shape)
         return tf.Variable(initial)
     # 卷积层一
-    x_image = tf.reshape(x, [-1, 25, 25, 1]) # reshape成了28*28*1的形状，因为是灰色图片，所以通道是1.作为训练时的input，-1代表图片数量不定
+    x_image = tf.reshape(x, [-1, img_w, img_h, channel]) # reshape成了28*28*1的形状，因为是灰色图片，所以通道是1.作为训练时的input，-1代表图片数量不定
     W_conv1 = weight_variable([5, 5, 1, 32])  # 第一二参数值得卷积核尺寸大小，即patch，第三个参数是图像通道数，第四个参数是卷积核的数目，代表会出现多少个卷积特征图像
     b_conv1 = bias_variable([32])             # 对于每一个卷积核都有一个对应的偏置量
     h_conv1 = tf.nn.relu(conv2d(x_image, W_conv1) + b_conv1)  # 图片乘以卷积核，并加上偏执量，卷积结果28x28x32
@@ -33,59 +77,59 @@ def convolutional(x, keep_prob):
     # Dropout dropout操作，减少过拟合，其实就是降低上一层某些输入的权重scale，甚至置为0，升高某些输入的权值，甚至置为2，防止评测曲线出现震荡，样本较少时很必要
     h_fc1_drop = tf.nn.dropout(h_fc1, keep_prob) #对卷积结果执行dropout操作
     # 输出层
-    W_fc2 = weight_variable([1024, 10]) # 二维张量，1*1024矩阵卷积，共10个卷积，对应我们开始的ys长度为10
+    W_fc2 = weight_variable([1024, class_num]) # 二维张量，1*1024矩阵卷积，共10个卷积，对应我们开始的ys长度为10
 
-    b_fc2 = bias_variable([10])
+    b_fc2 = bias_variable([class_num])
     y = tf.nn.softmax(tf.matmul(h_fc1_drop, W_fc2) + b_fc2)# 最后的分类，结果为1*1*10 softmax和sigmoid都是基于logistic分类算法，一个是多分类一个是二分类
     return y, [W_conv1, b_conv1, W_conv2, b_conv2, W_fc1, b_fc1, W_fc2, b_fc2]
 
 
 
+def train(class_num, img_w, img_h, channel=1):
+    x = tf.placeholder(tf.float32, [None, img_w, img_h, channel])# 声明一个占位符，None表示输入图片的数量不定，28*28图片分辨率
+    keep_prob = tf.placeholder(tf.float32)  	
+    y, variables = convolutional(x, keep_prob, class_num, img_w, img_h, channel=1)
+    y_ = tf.placeholder(tf.float32, [None, class_num])
 
-x = tf.placeholder(tf.float32, [None, 25, 25, 1])# 声明一个占位符，None表示输入图片的数量不定，28*28图片分辨率
-keep_prob = tf.placeholder(tf.float32)  	
-y, variables = convolutional(x, keep_prob)
-y_ = tf.placeholder(tf.float32, [None, 10])
+    #learning_rate = tf.train.exponential_decay(0.03,current_epoch,decay_steps=num_epochs,decay_rate=0.03)
+    # 定义loss(最小误差概率)，选定优化优化loss
 
-#learning_rate = tf.train.exponential_decay(0.03,current_epoch,decay_steps=num_epochs,decay_rate=0.03)
-# 定义loss(最小误差概率)，选定优化优化loss
+    loss = tf.reduce_mean(tf.nn.softmax_cross_entropy_with_logits_v2(labels=y_,logits=y))
+    train_op = tf.train.AdamOptimizer(learning_rate=0.0001).minimize(loss)
 
-loss = tf.reduce_mean(tf.nn.softmax_cross_entropy_with_logits_v2(labels=y_,logits=y))
-train_op = tf.train.AdamOptimizer(learning_rate=0.0001).minimize(loss)
+    # cross_entropy = -tf.reduce_sum(y_ *tf.log(y)) # 定义交叉熵为loss函数 
+    # train_op = tf.train.AdamOptimizer(learning_rate=0.0001).minimize(cross_entropy)# 调用优化器优化，通过喂数据争取cross_entropy最小化 
 
-# cross_entropy = -tf.reduce_sum(y_ *tf.log(y)) # 定义交叉熵为loss函数 
-# train_op = tf.train.AdamOptimizer(learning_rate=0.0001).minimize(cross_entropy)# 调用优化器优化，通过喂数据争取cross_entropy最小化 
+    correct_prediction = tf.equal(tf.argmax(y, 1), tf.argmax(y_, 1))
+    accuracy = tf.reduce_mean(tf.cast(correct_prediction, tf.float32))
 
-correct_prediction = tf.equal(tf.argmax(y, 1), tf.argmax(y_, 1))
-accuracy = tf.reduce_mean(tf.cast(correct_prediction, tf.float32))
+    img, label = read_TFrecords('train.tfrecords')
+    train_imgs_batch, train_label_batch=get_TFbatch(img, label, n_classes=class_num, batch_size=64)
 
-img, label = read_TFrecords('train.tfrecords')
-train_imgs_batch, train_label_batch=get_TFbatch(img, label, n_classes=10, batch_size=64)
+    saver = tf.train.Saver(variables)
+    with tf.Session() as sess:
+        sess.run(tf.global_variables_initializer())
 
-saver = tf.train.Saver(variables)
-with tf.Session() as sess:
-    sess.run(tf.global_variables_initializer())
+        coord=tf.train.Coordinator()
+        threads= tf.train.start_queue_runners(sess=sess, coord=coord)
 
-    coord=tf.train.Coordinator()
-    threads= tf.train.start_queue_runners(sess=sess, coord=coord)
+        for step in range(1000):
+            if coord.should_stop():
+                break
+            train_batch, train_labels = sess.run([train_imgs_batch, train_label_batch])
+            #val_images, val_labels = sess.run([val_imgs_batch, val_label_batch])
+            _ , train_loss, train_acc = sess.run([train_op, loss, accuracy], feed_dict={x: train_batch, y_: train_labels, keep_prob: 0.5})
+        # val_loss, val_acc = sess.run([loss, accuracy], feed_dict={x: val_images, y_: val_labels, keep_prob: 1.0})
+            if step % 10 == 0:
+                print('Step %d, loss %f, acc %.2f%%  ' % (step, train_loss ,train_acc * 100.0))
 
-    for step in range(6000):
-        if coord.should_stop():
-            break
-        train_batch, train_labels = sess.run([train_imgs_batch, train_label_batch])
-        #val_images, val_labels = sess.run([val_imgs_batch, val_label_batch])
-        _ , train_loss, train_acc = sess.run([train_op, loss, accuracy], feed_dict={x: train_batch, y_: train_labels, keep_prob: 0.5})
-       # val_loss, val_acc = sess.run([loss, accuracy], feed_dict={x: val_images, y_: val_labels, keep_prob: 1.0})
-        if step % 10 == 0:
-            print('Step %d, loss %f, acc %.2f%%  ' % (step, train_loss ,train_acc * 100.0))
+        checkpoint_path = os.path.join( 'model', 'convolutional.ckpt')
+    # saver.save(sess, checkpoint_path, global_step=step)
+        saver.save(sess, checkpoint_path, write_meta_graph=False, write_state=False)
 
-    checkpoint_path = os.path.join( 'model', 'convolutional.ckpt')
-   # saver.save(sess, checkpoint_path, global_step=step)
-    saver.save(sess, checkpoint_path, write_meta_graph=False, write_state=False)
-
-    coord.request_stop()
-    coord.join(threads) #把开启的线程加入主线程，等待threads结束
-    print('all threads are stopped!')
+        coord.request_stop()
+        coord.join(threads) #把开启的线程加入主线程，等待threads结束
+        print('all threads are stopped!')
 
     
 
@@ -110,15 +154,22 @@ saver.save(sess, os.path.join(os.path.dirname(__file__), 'model', 'convolutional
 def evaluate():
     x = tf.placeholder("float", [None, 28*28])
     keep_prob = tf.placeholder("float")
-    y2, variables = convolutional(x, keep_prob)
+    y2, variables = convolutional(x, keep_prob, 10, 28, 28, channel=1)
     sess = tf.Session()
     saver = tf.train.Saver(variables)
     saver.restore(sess, "model/convolutional.ckpt")
 
-    img = cv2.imread('0.png',0)
+    img = cv2.imread('0.jpg',0)
     img=cv2.resize(img,(28,28))
-    img=((255-np.array(img, dtype=np.uint8)) /255.0).reshape(1,784)
-    result=sess.run(y2, feed_dict={x: input, keep_prob: 1.0})
+    img=((285-np.array(img, dtype=np.uint8)) /285.0).reshape(1,28*28)
+    result=sess.run(y2, feed_dict={x: img, keep_prob: 1.0})
     prediction_labels = np.argmax(result, axis=1)
     print(result.flatten().tolist())
     print(prediction_labels)
+
+
+
+if __name__ == "__main__":
+    #create_TFrecords('train',28, 28, 10)
+    #train(10, 28 ,28, 1)
+    #evaluate()
