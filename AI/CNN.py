@@ -26,7 +26,17 @@ def model1(class_num, img_w, img_h, channel=1):
 
     Adam=keras.optimizers.Adam(lr=0.001, beta_1=0.9, beta_2=0.999, epsilon=1e-08)
     model.compile(loss='categorical_crossentropy', optimizer=Adam ,metrics=['accuracy'])
-    model.fit(x_train, y_train, batch_size=64, epochs=1000, verbose=1, validation_split=0.1, shuffle="batch")
+    tb = keras.callbacks.TensorBoard(log_dir='./logs',  # log 目录
+                    histogram_freq=1,  # 按照何等频率（epoch）来计算直方图，0为不计算
+                    batch_size=32,     # 用多大量的数据计算直方图
+                    write_graph=True,  # 是否存储网络结构图
+                    write_grads=False, # 是否可视化梯度直方图
+                    write_images=False,# 是否可视化参数
+                    embeddings_freq=0, 
+                    embeddings_layer_names=None, 
+                    embeddings_metadata=None)
+    callbacks = [tb]
+    model.fit(x_train, y_train, batch_size=64, epochs=1000, verbose=1, validation_split=0.1, shuffle="batch",callbacks=callbacks)
     model.save('my_model.h5')
 
 

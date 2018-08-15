@@ -194,8 +194,8 @@ def create_h5py(w, h, class_num, shuffle=True):
     print('y.shape:  ' + str(y.shape))
     print('x.shape:  ' + str(x.shape))    
     print('y[0]:' + str(y[0]))
-    cv2.imshow('x[0]',x[0])
-    cv2.waitKey(0)       
+##    cv2.imshow('x[0]',x[0])
+##    cv2.waitKey(0)       
     h5f.close()
     print('h5py创建成功')
 
