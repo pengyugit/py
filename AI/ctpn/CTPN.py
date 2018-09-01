@@ -22,6 +22,7 @@ def rpn_loss_regr(y_true,y_pred):
     regr = y_true[0,:,1:3]
     regr_keep = tf.where(K.equal(cls,1))[:,0]
     regr_true = tf.gather(regr,regr_keep)
+    
     regr_pred = tf.gather(y_pred[0],regr_keep)
     diff = tf.abs(regr_true-regr_pred)
     less_one = tf.cast(tf.less(diff,1.0/sigma),'float32')
