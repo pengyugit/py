@@ -1,0 +1,346 @@
+
+<!DOCTYPE html>
+<html>
+<head>
+   <meta  charset="utf-8" >
+   <title>视觉教学管理云平台</title>
+   <link rel="stylesheet" href="{{ url_for('static', filename='css/bootstrap.min.css') }}">
+   <link rel="stylesheet" href="{{ url_for('static', filename='css/my.css') }}"> 
+   <script  src="{{url_for('static', filename='js/jquery-3.3.1.min.js') }}"></script>
+   <script  src="{{url_for('static', filename='js/bootstrap.min.js') }}"></script>
+   <script  src="{{url_for('static', filename='js/my.js') }}"></script>
+   <link rel="stylesheet" href="{{ url_for('static', filename='css/fileinput.min.css') }}">
+   <script  src="{{url_for('static', filename='js/fileinput.min.js') }}"></script>
+   <script  src="{{url_for('static', filename='js/zh.js') }}"></script>
+
+
+<script type="text/javascript">
+
+//初始化fileinput控件（第一次初始化）
+function initFileInput(ctrlName, uploadUrl) {
+    var control = $('#' + ctrlName);
+    control.fileinput({
+        language: 'zh', //设置语言
+        uploadUrl: uploadUrl, //上传的地址
+        showCaption: true,
+        uploadAsync: true,
+        maxFileCount: 30,   
+        allowedFileExtensions : ['jpg', 'png'],//接收的文件后缀
+        //uploadAsync: false, //插件支持同步和异步
+        showUpload: false, //是否显示上传按钮
+    }).on("filebatchselected", function(event, files) {
+        $(this).fileinput("upload");
+    }).on("fileuploaded", function(event, data) {  
+    	  console.log(data);
+
+    });
+}
+
+$(function(){
+	var path = 'upload.do';
+	initFileInput("itemImagers",path);
+	var path21 = 'upload2.do';
+	var path22 = 'upload22.do';
+	initFileInput("itemImagers2",path21);
+	initFileInput("itemImagers22",path22);
+	var path3 = 'upload3.do';
+	initFileInput("itemImagers3",path3);
+	$("#cali3").click(function() {
+		 $("#result32").html("正在标定...请稍后");
+		 $("#result31").html("正在标定...请稍后");
+	            $.ajax({
+	                url : "calibration3.do",
+	                type : "POST",
+	                dataType:"json",
+	                contentType : "application/json;charset=UTF-8",
+	               //向后端传输的数据
+	                data : JSON.stringify({
+
+	                }),             
+	            	success:function(result) {
+	                 //后端返回的数据 
+	                    //var message= JSON.stringify(result);
+	                    //$("#result3").append(<img src = "result\\result1.jpg" class="img-thumbnail" > );
+	                    $("#result32").html(result['result']);
+	                    $("#result31").html(result['img']);
+	                },
+	                error:function(result){
+	                	$("#result").html("查询失败");
+	                }
+	            });
+	        });
+	$("#cali2").click(function() {
+		 $("#result22").html("正在标定...请稍后");
+		 $("#result21").html("正在标定...请稍后");
+	            $.ajax({
+	                url : "calibration2.do",
+	                type : "POST",
+	                dataType:"json",
+	                contentType : "application/json;charset=UTF-8",
+	               //向后端传输的数据
+	                data : JSON.stringify({
+	                    size: $("#size2").val(),	
+	                    rows: $("#rows2").val(),
+	                    cols: $("#cols2").val(),
+	                }),             
+	            	success:function(result) {
+	                    $("#result22").html(result['result']);
+	                    $("#result21").html(result['img']);
+	                },
+	                error:function(result){
+	                	$("#result").html("查询失败");
+	                }
+	            });
+	        });
+	$("#cali").click(function() {
+		 $("#result12").html("正在标定...请稍后");
+		 $("#result11").html("正在标定...请稍后");
+	            $.ajax({
+	                url : "calibration.do",
+	                type : "POST",
+	                dataType:"json",
+	                contentType : "application/json;charset=UTF-8",
+	               //向后端传输的数据
+	                data : JSON.stringify({
+	                    size: $("#size").val(),	
+	                    rows: $("#rows").val(),
+	                    cols: $("#cols").val(),
+	                }),             
+	            	success:function(result) {
+	                    $("#result12").html(result['result']);
+	                    $("#result11").html(result['img']);
+	                },
+	                error:function(result){
+	                	$("#result").html("查询失败");
+	                }
+	            });
+	        });
+
+});
+
+
+</script>
+
+</head>
+<body data-spy="scroll" data-target="#myScrollspy">
+<div class="container-fluid" style="padding-left:  0px; ">
+	<div id="title" class="container-fluid"> 
+        <div class="row clearfix">
+            <div class="col-md-3 col-sm-6 col-xs-6 column" style="padding-top: 8px;"> <span  class="glyphicon glyphicon-cloud"  ></span>&nbsp;视觉教学管理云平台</div>
+            <div class="col-md-6 " > </div>
+            <div class="col-md-3 col-sm-6 col-xs-6 column" align="right"  style="font-size: 18px;padding-top: 12px;padding-right: 20px;">       
+            <span class="glyphicon glyphicon-user" aria-hidden="true" class="text-right"></span>&nbsp;{{name}}&nbsp;&nbsp;
+                <a href="logout" style="color: rgb(220,20,20);font-size: 17px;"><span class="glyphicon glyphicon-off" class="text-right"></span>&nbsp;注销</a></div>             
+        </div>   
+    </div>
+    <div  id="tree">  
+        <form method="get" action="home">
+            <button id="b1" ><span class="glyphicon glyphicon-home" ></span>&nbsp;&nbsp;个人中心</button>
+        </form>
+        <form method="get" action="listpeople">
+            <button id="b1"  ><span class="glyphicon glyphicon-education" ></span>&nbsp;&nbsp;学生管理</button>
+        </form>
+        <form method="get" action="study_basics">
+            <button id="b1"><span class="glyphicon glyphicon-book" ></span>&nbsp;&nbsp;课程学习</button>
+        </form>
+        <div id="show2" style="display:none">
+            <form method="get" action="study_basics"><button id="b2" type="submit" >基础知识</button></form>
+            <form method="get" action="study_imgprc"><button id="b2" type="submit"  >图像处理</button></form>
+            <form method="get" action="study_objdec"><button id="b2" type="submit"  >目标识别</button></form>
+            <form method="get" action="study_3d"><button id="b2" type="submit" >三维重建</button></form>
+        </div>
+        <form method="get" action="imgProc">
+            <button id="b1"><span class="glyphicon glyphicon-facetime-video" ></span>&nbsp;&nbsp;实验演示</button>
+        </form>
+        <div id="show3" >
+            <form method="get" action="imgProc"><button id="b2" type="submit" >图像处理</button></form>
+            <form method="get" action="objdec"><button id="b2" type="submit">目标识别</button></form>
+            <form method="get" action="mnist1"><button id="b2" type="submit" >数字识别</button></form>
+            <form method="get" action="calibration"><button id="b2" style="color:rgb(255,0,0);">相机标定</button></form>
+            <form method="get" action="measure"><button id="b2" type="submit"  >位姿解算</button></form>
+        </div>
+        <form method="get" action="down">
+            <button id="b1" ><span class="glyphicon glyphicon-save" ></span>&nbsp;&nbsp;资料下载</button>
+        </form>
+            <button id="b1" ><span class="glyphicon glyphicon-question-sign" ></span>&nbsp;&nbsp;帮助中心</button>
+    </div>
+
+
+
+<div class="row"  style="padding-left: 175px; ">							
+<div class="col-xs-10" style="padding-top: 10px; ">
+	<div class="col-xs-12"  style="width:100%;padding-left: 3%;">
+	  <br><div id="section-1"class="target-fix"  ></div><h2 class="page"  style="padding-left: 20px;">单目标定</h2><br>
+		<div class="row"  style="padding-left: 20px;">
+		  <div  class="col-xs-9"   style="padding-right: 3%;">
+			        <div class="panel panel-default" style="border:none ; padding: 10px;">
+			        <div class="panel-body">
+			<!--  
+			<div class="file-loading">
+			     <input type="file" class="file-loading" id="test-upload" multiple>
+			</div>-->
+			<input type="file" name="itemImagers" id="itemImagers" multiple class="file-loading" />
+	
+			</div>
+		    </div>
+			</div>
+				
+			<div  class="col-xs-3"  style="padding-right: 5%;" >
+			<div class="panel panel-default" style="border:none ; padding: 5px;height:375px">
+			   <div class="panel-body"><br><br><br>
+				<input type="text" name="size" class="form-control" id="size" placeholder="棋盘格长度/mm (默认430)" ><!--  onkeydown="message()"动态监听 -->
+				<br>
+				<input type="text" name="rows" class="form-control" id="rows" placeholder="棋盘格行数 (默认6)" >
+				<br>
+				<input type="text" name="cols" class="form-control" id="cols" placeholder="棋盘格列数 (默认9)" >
+				<br><br>
+				<button id="cali" type="button"class="btn btn-info " style="width:100%;" >单目标定</button>  
+			</div>
+			</div>
+			</div>
+</div>
+
+<div class="row"  style="padding-left: 20px;  ">
+		  <div id="id2" class="col-xs-9"   style="padding-right: 3%;">
+			     <div class="panel panel-default" style="border:none ; ">
+			        <div class="panel-body" id="result11">
+			        	<div class="page"  style="font-size: 25px;   color: rgb(180,180,180); " align="center">标定图片</div>
+			    </div>	
+			   </div>	
+			</div>
+			<div id="id2" class="col-xs-3"  style="padding-right: 5%;" >
+			     <div class="panel panel-default" style="border:none ;">
+			        <div class="panel-body" id="result12" style="font-size: 15px;   color: rgb(80,80,80); " >
+			        	<div class="page"  style="font-size: 25px;   color: rgb(180,180,180); " align="center">标定结果</div>
+			    </div>	
+			   </div>	
+			</div>
+</div>
+	
+<div  class="col-xs-12"style="height:80px" >	</div>
+	
+ <br><div id="section-2"class="target-fix"  ></div><h2 class="page"  style="padding-left: 20px;">双目标定</h2><br>
+		<div class="row"  style="padding-left: 20px;">
+		   <div  class="col-xs-9"   style="padding-right: 3%;">
+			        <div class="panel panel-default" style="border:none ; padding: 10px;">
+			        <div class="panel-body">
+			<!--  
+			<div class="file-loading">
+			     <input type="file" class="file-loading" id="test-upload" multiple>
+			</div>-->
+			<div class="col-xs-6"   >
+			<input type="file" name="itemImagers2" id="itemImagers2" multiple class="file-loading" />
+			</div>
+			<div class="col-xs-6"   >
+			<input type="file" name="itemImagers22" id="itemImagers22" multiple class="file-loading" />
+			</div>
+		
+				<!-- form method="get" action="calibration.do"></form-->
+
+		        </div>
+				</div>
+			</div>
+			<div  class="col-xs-3"  style="padding-right: 5%;">
+			<div class="panel panel-default" style="border:none ; padding: 5px;height:375px">
+			   <div class="panel-body"><br><br><br>
+				<input type="text" name="size2" class="form-control" id="size2" placeholder="棋盘格长度/mm (默认430)" ><!--  onkeydown="message()"动态监听 -->
+				<br>
+				<input type="text" name="rows2" class="form-control" id="rows2" placeholder="棋盘格行数 (默认6)" >
+				<br>
+				<input type="text" name="cols2" class="form-control" id="cols2" placeholder="棋盘格列数 (默认9)" >
+				<br><br>
+				<button id="cali2" type="button"class="btn  btn btn-info "   style="width:100%;">双目标定</button> 
+			</div>
+			</div>
+			</div>
+</div>
+
+<div class="row"  style="padding-left: 20px;  ">
+		  <div id="id2" class="col-xs-9" style="padding-right: 3%;">
+			     <div class="panel panel-default" style="border:none; ">
+			        <div class="panel-body" id="result21">
+			        	<div class="page"  style="font-size: 25px;   color: rgb(180,180,180); " align="center">标定图片</div>
+			    </div>	
+			   </div>	
+			</div>
+			<div id="id2" class="col-xs-3" style="padding-right: 5%;">
+			     <div class="panel panel-default" style="border:none ;">
+			        <div class="panel-body" id="result22" style="font-size: 15px;   color: rgb(80,80,80); " >
+			        	<div class="page"  style="font-size: 25px;   color: rgb(180,180,180); " align="center">标定结果</div>
+			    </div>	
+			   </div>	
+			</div>
+</div>
+
+
+<div  class="col-xs-12"style="height:80px" >	</div>
+	
+ <br><div id="section-3"class="target-fix"  ></div><h2 class="page"  style="padding-left: 20px;">红外标定</h2><br>
+		<div class="row"  style="padding-left: 20px;">
+		<div class="col-xs-9"   style="padding-right: 3%;">
+			        <div class="panel panel-default" style="border:none ; padding: 10px;">
+			        <div class="panel-body">
+			<!--  
+			<div class="file-loading">
+			     <input type="file" class="file-loading" id="test-upload" multiple>
+			</div>-->
+			<input type="file" name="itemImagers3" id="itemImagers3" multiple class="file-loading" />
+		
+		
+			</div>
+		        </div>
+				</div>
+				
+			<div  class="col-xs-3"  style="padding-right: 5%;">
+			<div class="panel panel-default" style="border:none ; padding: 5px;height:375px">
+			   <div class="panel-body"><br><br><br>
+				<input type="text" name="size3" class="form-control" id="size3" placeholder="棋盘格长度/mm (默认430)" ><!--  onkeydown="message()"动态监听 -->
+				<br>
+				<input type="text" name="rows3" class="form-control" id="rows3" placeholder="棋盘格行数 (默认6)" >
+				<br>
+				<input type="text" name="cols3" class="form-control" id="cols3" placeholder="棋盘格列数 (默认9)" >
+				<br><br>
+				<button id="cali3" type="button"class="btn btn-info " style="width:100%;" >红外标定</button>  
+			</div>
+			</div>
+			</div>
+</div>
+
+<div class="row"  style="padding-left: 20px;  ">
+		 <div id="id2" class="col-xs-9"  style="padding-right: 3%;">
+			     <div class="panel panel-default" style="border:none ; ">
+			        <div class="panel-body" id="result31">
+			        	<div class="page"  style="font-size: 25px;   color: rgb(180,180,180); " align="center">标定图片</div>
+			    </div>	
+			   </div>	
+			</div>
+			<div id="id2" class="col-xs-3" style="padding-right: 5%;">
+			     <div class="panel panel-default" style="border:none ;">
+			        <div class="panel-body" id="result32" style="font-size: 15px;   color: rgb(80,80,80); " >
+			        	<div class="page"  style="font-size: 25px;   color: rgb(180,180,180); " align="center">标定结果</div>
+			    </div>	
+			   </div>	
+			</div>
+</div>
+		
+<div  class="col-xs-12"style="height:300px" >	</div>
+	
+</div>
+</div>
+	 <div class="col-xs-2" id="myScrollspy"style="padding-top: 40px;" >
+            <ul class="nav nav-tabs nav-stacked" data-spy="affix" data-offset-top="155" >
+                <li class="active"><a href="#section-1">单目标定</a></li>
+                <li><a href="#section-2">双目标定</a></li>
+                <li><a href="#section-3">红外标定</a></li>
+            </ul>
+        </div>
+</div>
+
+
+
+</div>
+</body>
+</html>
+
+
+ 

@@ -1,0 +1,765 @@
+
+<!DOCTYPE html>
+<html>
+
+<head>
+   <meta  charset="utf-8" >
+   <title>视觉教学管理云平台</title>
+   <script  src="{{url_for('static', filename='js/utils.js') }}"></script>
+   <link rel="stylesheet" href="{{ url_for('static', filename='css/bootstrap.min.css') }}">
+   <link rel="stylesheet" href="{{ url_for('static', filename='css/my.css') }}"> 
+   <script  src="{{url_for('static', filename='js/jquery-3.3.1.min.js') }}"></script>
+   <script  src="{{url_for('static', filename='js/bootstrap.min.js') }}"></script>
+   <script  src="{{url_for('static', filename='js/my.js') }}"></script>
+
+
+	
+
+<script type="text/javascript">
+
+$(function(){
+
+	$("#aaa1").click(function(){   
+		document.getElementById('aaa1').style.display = "none";
+		document.getElementById('status').style.display = "block";
+		
+		utils.loadOpenCv(() => {
+			document.getElementById('aaa').style.display = "block";
+			document.getElementById('status').style.display = "none";
+		});
+	});
+
+});
+	
+
+
+
+</script>
+
+
+</head>
+<body >
+<div class="container-fluid" style="padding-left:  0px; ">
+    <div id="title" class="container-fluid"> 
+        <div class="row clearfix">
+            <div class="col-md-3 col-sm-6 col-xs-6 column" style="padding-top: 8px;"> <span  class="glyphicon glyphicon-cloud"  ></span>&nbsp;视觉教学管理云平台</div>
+            <div class="col-md-6 " > </div>
+            <div class="col-md-3 col-sm-6 col-xs-6 column" align="right"  style="font-size: 18px;padding-top: 12px;padding-right: 20px;">       
+            <span class="glyphicon glyphicon-user" aria-hidden="true" class="text-right"></span>&nbsp;{{name}}&nbsp;&nbsp;
+                <a href="logout" style="color: rgb(220,20,20);font-size: 17px;"><span class="glyphicon glyphicon-off" class="text-right"></span>&nbsp;注销</a></div>             
+        </div>   
+    </div>
+    <div  id="tree">  
+        <form method="get" action="home">
+            <button id="b1" ><span class="glyphicon glyphicon-home" ></span>&nbsp;&nbsp;个人中心</button>
+        </form>
+        <form method="get" action="listpeople">
+            <button id="b1"  ><span class="glyphicon glyphicon-education" ></span>&nbsp;&nbsp;学生管理</button>
+        </form>
+        <form method="get" action="study_basics">
+            <button id="b1"><span class="glyphicon glyphicon-book" ></span>&nbsp;&nbsp;课程学习</button>
+        </form>
+        <div id="show2" style="display:none">
+            <form method="get" action="study_basics"><button id="b2" type="submit" >基础知识</button></form>
+            <form method="get" action="study_imgprc"><button id="b2" type="submit"  >图像处理</button></form>
+            <form method="get" action="study_objdec"><button id="b2" type="submit"  >目标识别</button></form>
+            <form method="get" action="study_3d"><button id="b2" type="submit" >三维重建</button></form>
+        </div>
+        <form method="get" action="imgProc">
+            <button id="b1"><span class="glyphicon glyphicon-facetime-video" ></span>&nbsp;&nbsp;实验演示</button>
+        </form>
+        <div id="show3" >
+            <form method="get" action="imgProc"><button id="b2" type="submit" style="color:rgb(255,0,0);">图像处理</button></form>
+            <form method="get" action="objdec"><button id="b2" type="submit" >目标识别</button></form>
+            <form method="get" action="mnist1"><button id="b2" type="submit" >数字识别</button></form>
+            <form method="get" action="calibration"><button id="b2" >相机标定</button></form>
+            <form method="get" action="measure"><button id="b2" type="submit"  >位姿解算</button></form>
+        </div>
+        <form method="get" action="down">
+            <button id="b1" ><span class="glyphicon glyphicon-save" ></span>&nbsp;&nbsp;资料下载</button>
+        </form>
+            <button id="b1" ><span class="glyphicon glyphicon-question-sign" ></span>&nbsp;&nbsp;帮助中心</button>
+    </div>
+
+
+
+
+
+<div class="row"  style="padding-left: 210px;padding-right: 20px; height:100% ">
+		 
+ 
+
+<div  class="col-xs-6"  style=" margin-right:1.5%; width:48% ">	
+ <br><h2 class="page"  >图像处理</h2><br>
+	<div  class="col-xs-12"  style="padding:20px;background-color: rgb(255,255,255); margin-buttom:20px;"> 
+	 <video id="videoInput" class="hidden">Your browser does not support the video tag.</video>
+      <canvas id="canvasOutput" style="width:100%;height:500px" ></canvas>
+  
+	   </div>
+	   
+	<div  class="col-xs-12"  style="padding:10px;background-color: rgb(255,255,255); margin-top:20px; " align="center"> 
+	<p class="err" id="errorMessage"></p>
+
+       <button id="aaa1"  class="btn btn-danger"  style="width:90%">点击进行视频初始化</button> 
+       <button id="aaa"  class="btn btn-success "  style="display:none;width:90%">打开视频</button> 
+	   <p id="status"  style="display:none;">正在初始化...请稍后</p>
+
+</div>
+
+</div>
+<div  class="col-xs-6" style="padding-top:50px;padding-left:30px;padding-right:50px;">	
+
+<div class="panel panel-success" style="margin:0px">
+    <div class="panel-heading"style="padding:3px;">
+        <h3 class="panel-title"><a data-toggle="collapse" data-parent="#accordion" href="#q2">色域转换</a></h3>
+    </div>
+	<div id="q2" class="panel-collapse collapse in">
+    <div class="panel-body">
+	<button id="src"  type="button"class="btn btn-default "style="padding:3px;padding-left:6px;padding-right:6px;margin:0px">RGB</button>
+<button id="m_gray"  type="button"class="btn btn-default "style="padding:3px;padding-left:6px;padding-right:6px;margin:0px">灰度化</button>
+<button id="m_hsv"  type="button"class="btn btn-default "style="padding:3px;padding-left:6px;padding-right:6px;margin:0px">HSV色域</button>		 
+    </div></div>
+</div>
+<div class="panel panel-success" style="margin:0px">
+    <div class="panel-heading"style="padding:3px;">
+        <h3 class="panel-title" ><a data-toggle="collapse" data-parent="#accordion" href="#q1">阈值</a></h3>
+    </div>
+	<div id="q1" class="panel-collapse collapse in">
+    <div class="panel-body"  style="padding:0px;padding-top:10px;padding-left:15px;padding-right:10px;">
+		<table class="table" style="margin:0px;padding:0px;">
+			<tr><td><button id="m_threshold1"  type="button"class="btn btn-default "style="padding:3px;padding-left:6px;padding-right:6px;margin:0px">固定阈值</button></td><td >  
+				<div  class="col-xs-3" >固定阈值: </div>
+				<div  class="col-xs-7" ><input type="range" id="trackbar_threshold1" value="100" min="0" max="254" step="1" ></div>
+				<div  class="col-xs-2"  ><input type="text" style="border:none" id="Value_threshold1" size="3" value="50"/></div>
+			</td></tr>
+			<tr><td><button id="m_threshold2"  type="button"class="btn btn-default "style="padding:3px;padding-left:6px;padding-right:6px;margin:0px">自适应阈值</button>	</td><td>
+				<div  class="col-xs-3" >块大小: </div>
+				<div  class="col-xs-7" ><input type="range" id="trackbar_threshold2" value="3" min="3" max="99" step="2" ></div>
+				<div  class="col-xs-2"  ><input type="text" style="border:none"id="Value_threshold2" size="3" value="3"/></div>
+			</td></tr>
+			<tr><td><button id="m_threshold3"  type="button"class="btn btn-default "style="padding:3px;padding-left:6px;padding-right:6px;margin:0px">InRange阈值</button>	</td><td>
+				<div  class="col-xs-3" >阈值下限: </div>
+				<div  class="col-xs-7" ><input type="range" id="trackbar_threshold31" value="50" min="0" max="255" step="1" ></div>
+				<div  class="col-xs-2"  ><input type="text" style="border:none"id="Value_threshold31" size="3" value="50"/></div>
+				<div  class="col-xs-3" >阈值上限: </div>
+				<div  class="col-xs-7" ><input type="range" id="trackbar_threshold32" value="100" min="0" max="255" step="1" ></div>
+				<div  class="col-xs-2"  ><input type="text" style="border:none"id="Value_threshold32" size="3" value="100"/></div>
+			</td></tr>
+		</table>
+  
+ </div>
+   </div>
+</div>
+
+<div class="panel panel-success" style="margin:0px;padding:0px;">
+    <div class="panel-heading"style="padding:3px;">
+        <h3 class="panel-title" >
+		<a data-toggle="collapse" data-parent="#accordion" href="#collapseOne">滤波</a>
+		</h3>
+    </div>
+		<div id="collapseOne" class="panel-collapse collapse in">
+    <div class="panel-body"  >
+     <div  class="col-xs-4" ><button id="m_blur3"  type="button"class="btn btn-default "style="padding:3px;padding-left:6px;padding-right:6px;margin:0px">均值滤波</button>
+     <button id="m_blur2"  type="button"class="btn btn-default "style="padding:3px;padding-left:6px;padding-right:6px;margin:0px">高斯滤波</button>
+    </div>
+    <div  class="col-xs-2" style="padding-top:5px;">内核大小 </div>
+	<div  class="col-xs-5" style="padding-top:5px;"><input type="range" id="trackbar_blur" value="3" min="3" max="99" step="2" ></div>
+	<div  class="col-xs-1"  style="padding-top:5px;"><input type="text" style="border:none"id="Value_blur" size="3" value="3"/></div></p>
+
+
+    </div>
+	</div>
+</div>	
+<div class="panel panel-success" style="margin:0px">
+    <div class="panel-heading" style="padding:3px;">
+        <h3 class="panel-title"><a data-toggle="collapse" data-parent="#accordion" href="#q4">形态学</a></h3>
+    </div>
+	<div id="q4" class="panel-collapse collapse in">
+    <div class="panel-body" >
+    <div  class="col-xs-12" style="width:100%">
+	<button id="m_morph1"  type="button"class="btn btn-default "style="padding:3px;padding-left:6px;padding-right:6px;margin:0px">腐蚀</button>
+	<button id="m_morph2"  type="button"class="btn btn-default "style="padding:3px;padding-left:6px;padding-right:6px;margin:0px">膨胀</button>
+	<button id="m_morph5"  type="button"class="btn btn-default "style="padding:3px;padding-left:6px;padding-right:6px;margin:0px">梯度</button>
+	<button id="m_morph6"  type="button"class="btn btn-default "style="padding:3px;padding-left:6px;padding-right:6px;margin:0px">顶帽</button>	
+	<button id="m_morph7"  type="button"class="btn btn-default "style="padding:3px;padding-left:6px;padding-right:6px;margin:0px">黑帽</button>	
+	<button id="m_morph3"  type="button"class="btn btn-default "style="padding:3px;padding-left:6px;padding-right:6px;margin:0px">开运算</button>
+	<button id="m_morph4"  type="button"class="btn btn-default "style="padding:3px;padding-left:6px;padding-right:6px;margin:0px">闭运算</button>	
+	</div>
+
+	<div class="col-xs-2" style="padding-top:10px;">内核大小 </div>
+	<div class="col-xs-8" style="padding-top:10px;"><input type="range" id="trackbar_morph" value="7" min="1" max="15" step="2" ></div>
+	<div class="col-xs-1" style="padding-top:10px;"><input type="text" style="border:none"id="Value_morph" size="3" value="7"/></div>
+
+
+    </div></div>
+</div>	
+<div class="panel panel-success" style="margin:0px">
+    <div class="panel-heading" style="padding:3px;">
+        <h3 class="panel-title"><a data-toggle="collapse" data-parent="#accordion" href="#q3">边缘检测</a></h3>
+    </div>
+	<div id="q3" class="panel-collapse collapse in" >
+    <div class="panel-body" >
+    <div  class="col-xs-6"  style="padding:0px;margin:0px">
+			<button id="m_con1"  type="button"class="btn btn-default "style="padding:3px;padding-left:6px;padding-right:6px;margin:0px">Canny算子</button>
+			<button id="m_con2"  type="button"class="btn btn-default "style="padding:3px;padding-left:6px;padding-right:6px;margin:0px">Sobel算子</button>
+			<button id="m_con3"  type="button"class="btn btn-default "style="padding:3px;padding-left:6px;padding-right:6px;margin:0px">Laplacian算子</button>
+	</div>
+			    <div  class="col-xs-2" >内核尺寸: </div>
+				<div  class="col-xs-3" ><input type="range" id="trackbar_con" value="3" min="3" max="7" step="2" ></div>
+				<div  class="col-xs-1"  ><input type="text" style="border:none"id="Value_con" size="3" value="3"/></div>
+
+			</tr>
+		</table>
+        
+        
+		
+    </div></div>
+</div>
+
+<div class="panel panel-success" style="margin:0px">
+    <div class="panel-heading" style="padding:3px;">
+        <h3 class="panel-title"><a data-toggle="collapse" data-parent="#accordion" href="#q6">直方图</a></h3>
+    </div>
+	<div id="q6" class="panel-collapse collapse in" >
+    <div class="panel-body" >
+        <button id="m_calcHist1"  type="button"class="btn btn-default "style="padding:3px;padding-left:6px;padding-right:6px;margin:0px">直方图计算</button>
+		<button id="m_calcHist2"  type="button"class="btn btn-default "style="padding:3px;padding-left:6px;padding-right:6px;margin:0px">直方图均值化</button>
+		<button id="m_calcHist3"  type="button"class="btn btn-default "style="padding:3px;padding-left:6px;padding-right:6px;margin:0px">反向投影</button>				
+    </div></div>
+</div>
+	
+<div class="panel panel-success" style="margin:0px">
+    <div class="panel-heading" style="padding:3px;">
+        <h3 class="panel-title"><a data-toggle="collapse" data-parent="#accordion" href="#q5s">图像检测</a></h3>
+    </div>
+	<div id="q5s" class="panel-collapse collapse in">
+    <div class="panel-body">
+            <button id="m_contours1"  type="button"class="btn btn-default "style="padding:3px;padding-left:6px;padding-right:6px;margin:0px">轮廓检测</button>
+		<button id="BackgroundSubtractorMOG2"  type="button"class="btn btn-default "style="padding:3px;padding-left:6px;padding-right:6px;margin:0px">运动检测</button>	
+			<button id="HoughCircles"  type="button"class="btn btn-default "style="padding:3px;padding-left:6px;padding-right:6px;margin:0px">圆形检测</button>	
+			<button id="HoughLinesP"  type="button"class="btn btn-default "style="padding:3px;padding-left:6px;padding-right:6px;margin:0px">直线检测</button>	
+    </div></div>
+</div>
+
+
+</div>
+
+
+</div>
+</div>
+
+
+
+
+<!-- 
+<h2>Hello OpenCV.js</h2>
+<p id="status">OpenCV.js is loading...</p>
+<div>
+  <div class="inputoutput">
+    <img id="imageSrc" alt="No Image" />
+    <div class="caption">imageSrc <input type="file" id="fileInput" name="file" /></div>
+  </div>
+  <div class="inputoutput">
+    <canvas id="canvasOutput2" ></canvas>
+    <div class="caption">canvasOutput</div>
+  </div>
+</div>
+<script type="text/javascript">
+
+
+let img = document.getElementById('imageSrc');
+let inputElement = document.getElementById('fileInput');
+
+inputElement.addEventListener('change', (e) => {
+  img.src = URL.createObjectURL(e.target.files[0]);
+}, false);
+
+img.onload = function() {
+  let mat = cv.imread(img);
+  let dst = new cv.Mat();
+  cv.cvtColor(mat, dst, cv.COLOR_RGBA2GRAY);
+  cv.imshow('canvasOutput2', dst);
+  mat.delete();
+  dst.delete();
+};
+function onOpenCvReady() {
+  document.getElementById('status').innerHTML = 'OpenCV.js is ready.';
+}
+</script>
+ -->
+
+
+<script type="text/javascript">
+	var choice= new String("");
+
+$(function(){
+	$("#aaa").click(function(){startCamera();});
+	$("#src").click(function(){choice='passThrough';});
+	$("#m_gray").click(function(){choice='gray';});
+	$("#m_hsv").click(function(){choice='hsv';});
+	$("#m_threshold1").click(function(){choice='threshold';});
+	$("#m_threshold2").click(function(){choice='adaptiveThreshold';});
+	$("#m_threshold3").click(function(){choice='inRange';});
+	$("#m_blur1").click(function(){choice='medianBlur';});
+	$("#m_blur2").click(function(){choice='gaussianBlur';});
+	$("#m_blur3").click(function(){choice='bilateralFilter';});
+	$("#m_morph1").click(function(){choice='morphology1';});
+	$("#m_morph2").click(function(){choice='morphology2';});
+	$("#m_morph3").click(function(){choice='morphology3';});
+	$("#m_morph4").click(function(){choice='morphology4';});
+	$("#m_morph5").click(function(){choice='morphology5';});
+	$("#m_morph6").click(function(){choice='morphology6';});
+	$("#m_morph7").click(function(){choice='morphology7';});
+	$("#m_con1").click(function(){choice='canny';});
+	$("#m_con2").click(function(){choice='sobel';});
+	$("#m_con3").click(function(){choice='laplacian';});
+	$("#m_contours1").click(function(){choice='contours';});
+	$("#m_calcHist1").click(function(){choice='calcHist';});
+	$("#m_calcHist2").click(function(){choice='equalizeHist';});
+	$("#m_calcHist3").click(function(){choice='backprojection';});
+	$("#HoughCircles").click(function(){choice='HoughCircles';});
+	$("#HoughLinesP").click(function(){choice='HoughLinesP';});
+	$("#BackgroundSubtractorMOG2").click(function(){choice='BackgroundSubtractorMOG2';});
+});
+trackbar_con = document.getElementById('trackbar_con');
+let Value_con = document.getElementById('Value_con');
+function canny(src) {
+	Value_con.setAttribute('value', trackbar_con.value);
+    cv.cvtColor(src, dstC1, cv.COLOR_RGBA2GRAY);
+    cv.Canny(dstC1, dstC1, 50, 100, Number(trackbar_con.value), false);
+    return dstC1;
+}
+
+
+function sobel(src) {
+	Value_con.setAttribute('value', trackbar_con.value);
+    let mat = new cv.Mat(height, width, cv.CV_8UC1);
+    cv.cvtColor(src, mat, cv.COLOR_RGB2GRAY, 0);
+    cv.Sobel(mat, dstC1, cv.CV_8U, 1, 0, Number(trackbar_con.value), 1, 0, cv.BORDER_DEFAULT);
+    mat.delete();
+    return dstC1;
+}
+
+function laplacian(src) {
+	Value_con.setAttribute('value', trackbar_con.value);
+    let mat = new cv.Mat(height, width, cv.CV_8UC1);
+    cv.cvtColor(src, mat, cv.COLOR_RGB2GRAY);
+    cv.Laplacian(mat, dstC1, cv.CV_8U, Number(trackbar_con.value), 1, 0, cv.BORDER_DEFAULT);
+    mat.delete();
+    return dstC1;
+}
+trackbar_morph = document.getElementById('trackbar_morph');
+let Value_morph = document.getElementById('Value_morph');
+function morphology(src,op) {
+	Value_morph.setAttribute('value', trackbar_morph.value);
+    let kernelSize = Number(trackbar_morph.value);
+    let kernel = cv.getStructuringElement(Number(cv.MORPH_RECT),
+                                          {width: kernelSize, height: kernelSize});
+    let color = new cv.Scalar();
+   // let op = Number(controls.morphologyOp);
+    let image = src;
+    if (op === cv.MORPH_GRADIENT || op === cv.MORPH_TOPHAT || op === cv.MORPH_BLACKHAT) {
+        cv.cvtColor(src, dstC3, cv.COLOR_RGBA2RGB);
+        image = dstC3;
+    }
+    cv.morphologyEx(image, dstC4, op, kernel, {x: -1, y: -1}, 1,cv.BORDER_CONSTANT, color);
+    kernel.delete();
+    return dstC4;
+}
+
+
+
+function HoughLinesP(src){
+	let lines = new cv.Mat();
+	let color = new cv.Scalar(255, 0, 0);
+	cv.cvtColor(src, dstC1, cv.COLOR_RGBA2GRAY, 0);
+	cv.Canny(dstC1, dstC1, 50, 200, 3);
+	// You can try more different parameters
+	cv.HoughLinesP(dstC1, lines, 2, Math.PI / 180, 2, 0, 0);
+	// draw lines
+	for (let i = 0; i < lines.rows; ++i) {
+	    let startPoint = new cv.Point(lines.data32S[i * 4], lines.data32S[i * 4 + 1]);
+	    let endPoint = new cv.Point(lines.data32S[i * 4 + 2], lines.data32S[i * 4 + 3]);
+	    cv.line(src, startPoint, endPoint, color,5);
+	}
+	lines.delete();
+	return src;
+}
+function HoughCircles(src){
+	cv.cvtColor(src, dstC1, cv.COLOR_RGBA2GRAY, 0);
+    circles = new cv.Mat();
+	cv.HoughCircles(dstC1, circles, cv.HOUGH_GRADIENT,2, 80, 500, 200, 0, 0);
+	for (let i = 0; i < circles.cols; ++i) {
+	    let x = circles.data32F[i * 3];
+	    let y = circles.data32F[i * 3 + 1];
+	    let radius = circles.data32F[i * 3 + 2];
+	    let center = new cv.Point(x, y);
+	    cv.circle(src, center, radius,  new cv.Scalar(40,50,255),10);
+	}
+	circles.delete();
+	return src;
+}
+
+
+function BackgroundSubtractorMOG2(src) {
+	 fgbg.apply(src, dst_bg);
+	 src.copyTo(dst_bg, dst_bg)  
+	return dst_bg
+}
+
+let width = 0;
+let height = 0; 
+trackbar_blur = document.getElementById('trackbar_blur');
+let Value_blur = document.getElementById('Value_blur');
+function gaussianBlur(src) {
+	Value_blur.setAttribute('value', trackbar_blur.value);
+    cv.GaussianBlur(src, dstC4,
+                    {width: Number(trackbar_blur.value), height: Number(trackbar_blur.value)},
+                    0, 0, cv.BORDER_DEFAULT);
+    return dstC4;
+}
+function bilateralFilter(src) {
+	Value_blur.setAttribute('value', trackbar_blur.value);
+	let ksizeblur = new cv.Size(Number(trackbar_blur.value), Number(trackbar_blur.value));
+    cv.blur(src, dstC3, ksizeblur, new cv.Point(-1, -1), cv.BORDER_DEFAULT);
+    return dstC3;
+}
+
+let utils = new Utils('errorMessage');
+
+
+
+let resolution = window.innerWidth < 960 ? 'qvga' : 'vga';
+
+let streaming = false;
+
+let video = document.getElementById('videoInput');
+let vc = null;
+
+let container = document.getElementById('container');
+
+let lastFilter = '';
+let src = null;
+let dstC1 = null;
+let dstC3 = null;
+let dstC4 = null;
+let dsthfy = null;
+let dsthfz = null;
+let fgbg = null;
+let dst_bg = null;
+let circles = null;
+function startVideoProcessing() {
+    src = new cv.Mat(height, width, cv.CV_8UC4);
+    dstC1 = new cv.Mat(height, width, cv.CV_8UC1);
+    dstC3 = new cv.Mat(height, width, cv.CV_8UC3);
+    dstC4 = new cv.Mat(height, width, cv.CV_8UC4);
+    dsthfy = new cv.Mat(height, width, cv.CV_8UC4);
+    dsthfz= new cv.Mat(height, width, cv.CV_8UC4);
+    dst_bg = new cv.Mat(height, width, cv.CV_8UC1);
+
+    fgbg = new cv.BackgroundSubtractorMOG2(400, 50, true);
+    requestAnimationFrame(processVideo);
+}
+
+function passThrough(src) {
+    return src;
+}
+
+function gray(src) {
+    cv.cvtColor(src, dstC1, cv.COLOR_RGBA2GRAY);
+    return dstC1;
+}
+
+function hsv(src) {
+    cv.cvtColor(src, dstC3, cv.COLOR_RGBA2RGB);
+    cv.cvtColor(dstC3, dstC3, cv.COLOR_RGB2HSV);
+    return dstC3;
+}
+
+
+
+let contoursColor = [];
+for (let i = 0; i < 10000; i++) {
+    contoursColor.push([Math.round(Math.random() * 255),
+                        Math.round(Math.random() * 255),
+                        Math.round(Math.random() * 255), 0]);
+}
+
+function contours(src) {
+    cv.cvtColor(src, dstC1, cv.COLOR_RGBA2GRAY);
+    cv.threshold(dstC1, dstC4, 120, 200, cv.THRESH_BINARY);
+    let contours = new cv.MatVector();
+    let hierarchy = new cv.Mat();
+    cv.findContours(dstC4, contours, hierarchy,
+                    Number(cv.RETR_EXTERNAL),
+                    Number(cv.CHAIN_APPROX_SIMPLE), {x: 0, y: 0});
+    dstC3.delete();
+    dstC3 = cv.Mat.ones(height, width, cv.CV_8UC3);
+    for (let i = 0; i<contours.size(); ++i) {
+        let color = contoursColor[i];
+        cv.drawContours(dstC3, contours, i, new cv.Scalar(40,50,255), 1, cv.LINE_8, hierarchy);
+    }
+    contours.delete(); hierarchy.delete();
+    return dstC3;
+}
+
+function calcHist(src) {
+    cv.cvtColor(src, dstC1, cv.COLOR_RGBA2GRAY);
+    let srcVec = new cv.MatVector();
+    srcVec.push_back(dstC1);
+    let scale = 2;
+    let channels = [0];
+    let histSize = [src.cols/scale];
+    const ranges = [0, 255];
+    let hist = new cv.Mat();
+    let mask = new cv.Mat();
+    let color = new cv.Scalar(0xfb, 0xca, 0x04, 0xff);
+    cv.calcHist(srcVec, channels, mask, hist, histSize, ranges);
+    let result = cv.minMaxLoc(hist, mask);
+    let max = result.maxVal;
+    cv.cvtColor(dstC1, dstC4, cv.COLOR_GRAY2RGBA);
+    for (let i = 0; i < histSize[0]; i++) {
+        let binVal = hist.data32F[i] * src.rows / max;
+        cv.rectangle(dstC4, {x: i * scale, y: src.rows - 1},
+                     {x: (i + 1) * scale - 1, y: src.rows - binVal/3}, color, cv.FILLED);
+    }
+    srcVec.delete();
+    mask.delete();
+    hist.delete();
+    return dstC4;
+}
+
+function equalizeHist(src) {
+    cv.cvtColor(src, dstC1, cv.COLOR_RGBA2GRAY, 0);
+    cv.equalizeHist(dstC1, dstC1);
+    return dstC1;
+}
+
+let base;
+
+function backprojection(src) {
+    if (lastFilter !== 'backprojection') {
+        if (base instanceof cv.Mat) {
+            base.delete();
+        }
+        base = src.clone();
+        cv.cvtColor(base, base, cv.COLOR_RGB2HSV, 0);
+    }
+    cv.cvtColor(src, dstC3, cv.COLOR_RGB2HSV, 0);
+    let baseVec = new cv.MatVector();
+    let targetVec = new cv.MatVector();
+    baseVec.push_back(base); targetVec.push_back(dstC3);
+    let mask = new cv.Mat();
+    let hist = new cv.Mat();
+    let channels = [0];
+    let histSize = [50];
+    let ranges;
+	ranges = [0, 100];
+    cv.calcHist(baseVec, channels, mask, hist, histSize, ranges);
+    cv.normalize(hist, hist, 0, 255, cv.NORM_MINMAX);
+    cv.calcBackProject(targetVec, channels, hist, dstC1, ranges, 1);
+    baseVec.delete();
+    targetVec.delete();
+    mask.delete();
+    hist.delete();
+    return dstC1;
+}
+
+function erosion(src) {
+    let kernelSize = controls.erosionSize;
+    let kernel = cv.Mat.ones(kernelSize, kernelSize, cv.CV_8U);
+    let color = new cv.Scalar();
+    cv.erode(src, dstC4, kernel, {x: -1, y: -1}, 1, Number(controls.erosionBorderType), color);
+    kernel.delete();
+    return dstC4;
+}
+
+function dilation(src) {
+    let kernelSize = controls.dilationSize;
+    let kernel = cv.Mat.ones(kernelSize, kernelSize, cv.CV_8U);
+    let color = new cv.Scalar();
+    cv.dilate(src, dstC4, kernel, {x: -1, y: -1}, 1, Number(controls.dilationBorderType), color);
+    kernel.delete();
+    return dstC4;
+}
+
+
+
+trackbar_threshold1 = document.getElementById('trackbar_threshold1');
+let Value_threshold1 = document.getElementById('Value_threshold1');
+function threshold(src) {
+    let mat = new cv.Mat(height, width, cv.CV_8U);
+    cv.cvtColor(src, mat, cv.COLOR_RGBA2GRAY);
+	Value_threshold1.setAttribute('value', trackbar_threshold1.value);
+	cv.threshold(src, dstC4, Number(trackbar_threshold1.value), 200, cv.THRESH_BINARY);
+    return dstC4;
+}
+
+trackbar_threshold2 = document.getElementById('trackbar_threshold2');
+let Value_threshold2 = document.getElementById('Value_threshold2');
+function adaptiveThreshold(src) {
+	Value_threshold2.setAttribute('value', trackbar_threshold2.value);
+    let mat = new cv.Mat(height, width, cv.CV_8U);
+    cv.cvtColor(src, mat, cv.COLOR_RGBA2GRAY);
+    cv.adaptiveThreshold(mat, dstC1, 200, cv.ADAPTIVE_THRESH_GAUSSIAN_C,
+                         cv.THRESH_BINARY, Number(trackbar_threshold2.value), 2);
+    mat.delete();
+    return dstC1;
+}
+
+trackbar_threshold31 = document.getElementById('trackbar_threshold31');
+let Value_threshold31 = document.getElementById('Value_threshold31');
+trackbar_threshold32 = document.getElementById('trackbar_threshold32');
+let Value_threshold32 = document.getElementById('Value_threshold32');
+function inRange(src) {
+	Value_threshold31.setAttribute('value', trackbar_threshold31.value);
+	Value_threshold32.setAttribute('value', trackbar_threshold32.value);
+    let lowValue =  Number(trackbar_threshold31.value);
+    let lowScalar = new cv.Scalar(lowValue, lowValue, lowValue, 255);
+    let highValue =  Number(trackbar_threshold32.value);
+    let highScalar = new cv.Scalar(highValue, highValue, highValue, 255);
+    let low = new cv.Mat(height, width, src.type(), lowScalar);
+    let high = new cv.Mat(height, width, src.type(), highScalar);
+    cv.inRange(src, low, high, dstC1);
+    low.delete(); high.delete();
+    return dstC1;
+}
+
+function processVideo() {
+    if (!streaming) return;
+    vc.read(src);
+    let result;
+    switch (choice) {
+        case 'passThrough': result = passThrough(src); break;
+        case 'gray': result = gray(src); break;
+        case 'hsv': result = hsv(src); break;
+        case 'canny': result = canny(src); break;
+        case 'inRange': result = inRange(src); break;
+        case 'threshold': result = threshold(src); break;
+        case 'adaptiveThreshold': result = adaptiveThreshold(src); break;
+        case 'gaussianBlur': result = gaussianBlur(src); break;
+        case 'bilateralFilter': result = bilateralFilter(src); break;
+        case 'medianBlur': result = medianBlur(src); break;
+        case 'sobel': result = sobel(src); break;
+        case 'scharr': result = scharr(src); break;
+        case 'laplacian': result = laplacian(src); break;
+        case 'contours': result = contours(src); break;
+        case 'calcHist': result = calcHist(src); break;
+        case 'equalizeHist': result = equalizeHist(src); break;
+        case 'backprojection': result = backprojection(src); break;
+        case 'erosion': result = erosion(src); break;
+        case 'dilation': result = dilation(src); break;
+        case 'morphology1': result = morphology(src,cv.MORPH_ERODE); break;
+        case 'morphology2': result = morphology(src,cv.MORPH_DILATE); break;
+        case 'morphology3': result = morphology(src,cv.MORPH_OPEN); break;
+        case 'morphology4': result = morphology(src,cv.MORPH_CLOSE); break;
+        case 'morphology5': result = morphology(src,cv.MORPH_GRADIENT); break;
+        case 'morphology6': result = morphology(src,cv.MORPH_TOPHAT); break;
+        case 'morphology7': result = morphology(src,cv.MORPH_BLACKHAT); break;
+        case 'HoughCircles': result = HoughCircles(src); break;
+        case 'HoughLinesP': result = HoughLinesP(src); break;
+        case 'BackgroundSubtractorMOG2': result = BackgroundSubtractorMOG2(src); break;
+        default: result = passThrough(src);
+    }
+    cv.imshow('canvasOutput', result);
+    requestAnimationFrame(processVideo);
+}
+
+
+
+
+
+function initUI() {
+
+
+
+    canny.add(controls, 'cannyThreshold1', 1, 500, 1).name('阈值1');
+    canny.add(controls, 'cannyThreshold2', 1, 500, 1).name('阈值2');
+    canny.add(controls, 'cannyApertureSize', 3, 7, 1).name('孔径大小').onChange(
+        function(value) {
+            if (value % 2 === 0) controls.cannyApertureSize = value + 1;
+        });
+  
+
+    let contours = gui.addFolder(filters['contours']);
+    contours.domElement.onclick = function() {
+        closeLastFolder(contours);
+        controls.contours();
+    };
+    contours.add(
+        controls, 'contoursMode',
+        {'RETR_EXTERNAL': cv.RETR_EXTERNAL,
+         'RETR_LIST': cv.RETR_LIST,
+         'RETR_CCOMP': cv.RETR_CCOMP,
+         'RETR_TREE': cv.RETR_TREE}).name('模式');
+    contours.add(
+        controls, 'contoursMethod',
+        {'CHAIN_APPROX_NONE': cv.CHAIN_APPROX_NONE,
+         'CHAIN_APPROX_SIMPLE': cv.CHAIN_APPROX_SIMPLE,
+         'CHAIN_APPROX_TC89_L1': cv.CHAIN_APPROX_TC89_L1,
+         'CHAIN_APPROX_TC89_KCOS': cv.CHAIN_APPROX_TC89_KCOS}).name('方法');
+
+    let histograms = gui.addFolder('直方图');
+    histograms.add(controls, 'calcHist').name(filters['calcHist']).onChange(function() {
+        closeLastFolder(null);
+    });
+    histograms.add(controls, 'equalizeHist').name(filters['equalizeHist']).onChange(function() {
+        closeLastFolder(null);
+    });
+
+    let backprojection = histograms.addFolder(filters['backprojection']);
+    backprojection.domElement.onclick = function() {
+        closeLastFolder(backprojection);
+        controls.backprojection();
+    };
+    backprojection.add(controls, 'backprojectionRangeLow', 0, 255, 1).name('下限');
+    backprojection.add(controls, 'backprojectionRangeHigh', 0, 255, 1).name('上限');
+}
+
+function startCamera() {
+    if (!streaming) {
+        utils.clearError();
+        utils.startCamera(resolution, onVideoStarted, 'videoInput');
+		$("#aaa").html('关闭视频');
+    } else {
+        utils.stopCamera();
+        onVideoStopped();
+		$("#aaa").html('打开视频');
+    }
+}
+
+function onVideoStarted() {
+    height = video.videoHeight;
+    width = video.videoWidth;
+    video.setAttribute('width', width);
+    video.setAttribute('height', height);
+    streaming = true;
+    vc = new cv.VideoCapture(video);
+    startVideoProcessing();
+}
+
+function stopVideoProcessing() {
+    if (src != null && !src.isDeleted()) src.delete();
+    if (dstC1 != null && !dstC1.isDeleted()) dstC1.delete();
+    if (dstC3 != null && !dstC3.isDeleted()) dstC3.delete();
+    if (dstC4 != null && !dstC4.isDeleted()) dstC4.delete();
+}
+
+function onVideoStopped() {
+    if (!streaming) return;
+    stopVideoProcessing();
+    document.getElementById('canvasOutput').getContext('2d').clearRect(0, 0, width, height);
+    streaming = false;
+}
+
+
+function onOpenCvReady() {
+	document.getElementById('aaa').style.display = "block";
+	document.getElementById('status').style.display = "none";
+}
+</script>
+</body>
+</html>
+
+
+ 

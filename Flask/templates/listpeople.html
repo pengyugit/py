@@ -1,0 +1,185 @@
+<!DOCTYPE html>
+<html>
+<head>
+   <meta  charset="utf-8" >
+   <title>视觉教学管理云平台</title>
+   <link rel="stylesheet" href="{{ url_for('static', filename='css/bootstrap.min.css') }}">
+   <link rel="stylesheet" href="{{ url_for('static', filename='css/my.css') }}"> 
+   <script  src="{{url_for('static', filename='js/jquery-3.3.1.min.js') }}"></script>
+   <script  src="{{url_for('static', filename='js/bootstrap.min.js') }}"></script>
+   <script  src="{{url_for('static', filename='js/my.js') }}"></script>
+
+<script type="text/javascript">
+
+
+$(function(){
+
+	$("#select").click(function() {
+	            $.ajax({
+	                url : "peopleSelect.do",
+	                type : "POST",
+	                dataType:"json",
+	                contentType : "application/json;charset=UTF-8",
+	               //向后端传输的数据
+	                data : JSON.stringify({
+	                    id : $("#user_id").val(),
+	                }),             
+	            	success:function(result) {
+	                 //后端返回的数据 
+	                    var message= JSON.stringify(result);
+	                    $("#select-box").html("查询成功" + message);
+	             
+	                },
+	                error:function(result){
+	                    $(msg).html("查询失败");
+	                }
+	            });
+	        });
+	});
+
+function message(){
+    $.ajax({
+        url : "peopleSelect.do",
+        type : "POST",
+        dataType:"json",
+        contentType : "application/json;charset=UTF-8",
+       //向后端传输的数据
+        data : JSON.stringify({
+            id : $("#user_id").val(),
+        }),             
+    	success:function(result) {
+         //后端返回的数据 
+           
+            var node='<table>';
+            for(var obj in result){
+            		  $("#select-box").html(obj.id);
+                       node+='<tr><td>'+result[1].id+'</td><td>'+obj.name+'</td><tr>';
+                  }
+                  $('#table').append($(node));
+             
+        },
+        error:function(result){
+            $("#select-box").html("查询失败");
+        }
+    });
+  }
+</script>
+</head>
+<body>
+<div class="container-fluid" style="padding-left: 0px; ">
+	<div id="title" class="container-fluid"> 
+		<div class="row clearfix">
+			<div class="col-md-3 col-sm-6 col-xs-6 column" style="padding-top: 8px;"> <span  class="glyphicon glyphicon-cloud"  ></span>&nbsp;视觉教学管理云平台</div>
+			<div class="col-md-6 " > </div>
+			<div class="col-md-3 col-sm-6 col-xs-6 column" align="right"  style="font-size: 18px;padding-top: 12px;padding-right: 20px;">       
+			<span class="glyphicon glyphicon-user" aria-hidden="true" class="text-right"></span>&nbsp;{{name}}&nbsp;&nbsp;
+				<a href="logout" style="color: rgb(220,20,20);font-size: 17px;"><span class="glyphicon glyphicon-off" class="text-right"></span>&nbsp;注销</a></div>             
+		</div>   
+	</div>
+	<div  id="tree">  
+		<form method="get" action="home">
+			<button id="b1" ><span class="glyphicon glyphicon-home" ></span>&nbsp;&nbsp;个人中心</button>
+		</form>
+		<form method="get" action="listpeople">
+			<button id="b1" style="color:rgb(255,0,0);" ><span class="glyphicon glyphicon-education" ></span>&nbsp;&nbsp;学生管理</button>
+		</form>
+		<form method="get" action="study_basics">
+			<button id="b1"><span class="glyphicon glyphicon-book" ></span>&nbsp;&nbsp;课程学习</button>
+		</form>
+		<div id="show2" style="display:none">
+			<form method="get" action="study_basics"><button id="b2" type="submit" >基础知识</button></form>
+			<form method="get" action="study_imgprc"><button id="b2" type="submit"  >图像处理</button></form>
+			<form method="get" action="study_objdec"><button id="b2" type="submit"  >目标识别</button></form>
+			<form method="get" action="study_3d"><button id="b2" type="submit" >三维重建</button></form>
+		</div>
+		<form method="get" action="imgProc">
+			<button id="b1"><span class="glyphicon glyphicon-facetime-video" ></span>&nbsp;&nbsp;实验演示</button>
+		</form>
+		<div id="show3" style="display:none">
+			<form method="get" action="imgProc"><button id="b2" type="submit" >图像处理</button></form>
+			<form method="get" action="objdec"><button id="b2" type="submit" >目标识别</button></form>
+			<form method="get" action="mnist1"><button id="b2" type="submit" >数字识别</button></form>
+			<form method="get" action="calibration"><button id="b2" >相机标定</button></form>
+			<form method="get" action="measure"><button id="b2" type="submit"  >位姿解算</button></form>
+		</div>
+		<form method="get" action="down">
+			<button id="b1" ><span class="glyphicon glyphicon-save" ></span>&nbsp;&nbsp;资料下载</button>
+		</form>
+			<button id="b1" ><span class="glyphicon glyphicon-question-sign" ></span>&nbsp;&nbsp;帮助中心</button>
+	</div>
+
+
+
+   
+		  
+     
+
+
+        <div id="id2" class="col-xs-12"  style="padding-left: 200px; padding-right: 40px; " >
+			<div  class="col-xs-9" >
+           <br><h2 class="page">学生信息管理</h2><br><br></div>
+             <form name="form1" action="peopleSelect.do" method="post">  
+             <div  class="col-xs-2"   style="padding-top: 80px;"    >
+		      <input type="text" name="user_id" class="form-control" id="user_id" placeholder="请输入查询学号" ><!--  onkeydown="message()"动态监听 -->
+		    </div>
+		    <div  class="col-xs-1" style="padding-top: 80px;"  >
+
+		      <button type="submit" id="select2" class="btn btn-primary">查找</button> <span class="glyphicon" id="select-box"></span>
+		    </div></form>
+		    <div  class="col-xs-12" >
+                   <div class="panel panel-default" style="border:none ;padding-left: 40px; padding-right: 40px;padding-top: 20px; padding-buttom: 20px;">
+        <div class="panel-body">
+
+		        
+        
+        
+				<div class="table-responsive">
+					<table class="table" id="table"  style="border-collapse:separate; border-spacing:0px 4px;">
+						<thead>
+							<tr>
+								<th>序号</th>
+								<th>学号</th>
+								<th>姓名</th>
+								<th>专业</th>
+								<th>注册日期</th>
+								<th>删除用户</th>
+								
+							</tr>
+						</thead>
+						<tbody>
+						<c:forEach items="${msg}" var="c" varStatus="st" >
+				            <tr>
+				                <td>${st.index+1+page.start}</td>
+				                <td>${c.id}</td>
+				                <td>${c.name}</td>
+				                <td>${c.major}</td>
+				                <td>${c.datetime}</td>
+				                <td><a href="del.do?id2=${c.id}">点击删除</a></td>
+				            </tr>
+				        </c:forEach>
+						</tbody>
+				</table><br>
+				    <div style="text-align:right">
+				        <a href="?start=0">首  页</a>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+				        <a href="?start=${page.start-page.count}">上一页</a>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+				        <a href="?start=${page.start+page.count}">下一页</a>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+				        <a href="?start=${page.last}">末  页</a>
+				    </div>
+				</div>  	
+           </div>
+	</div>
+  </div>
+ </div>
+ </div>
+
+
+
+
+
+
+
+</body>
+</html>
+
+
+ 

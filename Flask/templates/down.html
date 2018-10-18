@@ -1,0 +1,104 @@
+<!DOCTYPE html>
+<html>
+<head>
+   <meta  charset="utf-8" >
+   <title>视觉教学管理云平台</title>
+   <link rel="stylesheet" href="{{ url_for('static', filename='css/bootstrap.min.css') }}">
+   <link rel="stylesheet" href="{{ url_for('static', filename='css/my.css') }}"> 
+   <script  src="{{url_for('static', filename='js/jquery-3.3.1.min.js') }}"></script>
+   <script  src="{{url_for('static', filename='js/bootstrap.min.js') }}"></script>
+   <script  src="{{url_for('static', filename='js/my.js') }}"></script>
+   <link rel="stylesheet" href="{{ url_for('static', filename='css/fileinput.min.css') }}">
+   <script  src="{{url_for('static', filename='js/fileinput.min.js') }}"></script>
+   <script  src="{{url_for('static', filename='js/zh.js') }}"></script>
+   
+</head>
+<body>
+<div class="container-fluid" style="padding-left:  0px; ">
+    <div id="title" class="container-fluid"> 
+        <div class="row clearfix">
+            <div class="col-md-3 col-sm-6 col-xs-6 column" style="padding-top: 8px;"> <span  class="glyphicon glyphicon-cloud"  ></span>&nbsp;视觉教学管理云平台</div>
+            <div class="col-md-6 " > </div>
+            <div class="col-md-3 col-sm-6 col-xs-6 column" align="right"  style="font-size: 18px;padding-top: 12px;padding-right: 20px;">       
+            <span class="glyphicon glyphicon-user" aria-hidden="true" class="text-right"></span>&nbsp;{{name}}&nbsp;&nbsp;
+                <a href="logout" style="color: rgb(220,20,20);font-size: 17px;"><span class="glyphicon glyphicon-off" class="text-right"></span>&nbsp;注销</a></div>             
+        </div>   
+    </div>
+    <div  id="tree">  
+        <form method="get" action="home">
+            <button id="b1" ><span class="glyphicon glyphicon-home" ></span>&nbsp;&nbsp;个人中心</button>
+        </form>
+        <form method="get" action="listpeople">
+            <button id="b1"  ><span class="glyphicon glyphicon-education" ></span>&nbsp;&nbsp;学生管理</button>
+        </form>
+        <form method="get" action="study_basics">
+            <button id="b1"><span class="glyphicon glyphicon-book" ></span>&nbsp;&nbsp;课程学习</button>
+        </form>
+        <div id="show2" style="display:none">
+            <form method="get" action="study_basics"><button id="b2" type="submit" >基础知识</button></form>
+            <form method="get" action="study_imgprc"><button id="b2" type="submit"  >图像处理</button></form>
+            <form method="get" action="study_objdec"><button id="b2" type="submit"  >目标识别</button></form>
+            <form method="get" action="study_3d"><button id="b2" type="submit" >三维重建</button></form>
+        </div>
+        <form method="get" action="imgProc">
+            <button id="b1"><span class="glyphicon glyphicon-facetime-video" ></span>&nbsp;&nbsp;实验演示</button>
+        </form>
+        <div id="show3" style="display:none">
+            <form method="get" action="imgProc"><button id="b2" type="submit" >图像处理</button></form>
+            <form method="get" action="objdec"><button id="b2" type="submit">目标识别</button></form>
+            <form method="get" action="mnist1"><button id="b2" type="submit" >数字识别</button></form>
+            <form method="get" action="calibration"><button id="b2" >相机标定</button></form>
+            <form method="get" action="measure"><button id="b2" type="submit" >位姿解算</button></form>
+        </div>
+        <form method="get" action="down">
+            <button id="b1" style="color:rgb(255,0,0);" ><span class="glyphicon glyphicon-save" ></span>&nbsp;&nbsp;资料下载</button>
+        </form>
+            <button id="b1" ><span class="glyphicon glyphicon-question-sign" ></span>&nbsp;&nbsp;帮助中心</button>
+    </div>
+
+
+
+
+    <div class="row"  style="padding-left: 350px;padding-right: 250px;padding-top: 30px;  ">	
+        <br><h2 class="page">资料下载</h2><br><br>					
+        <div class="panel panel-default" style="border:none ;padding-left: 50px; padding-right: 50px;padding-top: 30px; padding-buttom: 30px;">
+            <div class="panel-body">
+                <table  class="table " style="border-collapse:separate; border-spacing:0px 12px;">
+                    <thead >
+                        <tr >
+                        <th >文件名称</th>
+                        <th style="width:25%">文件下载</th>
+                        </tr>
+                    </thead>
+                    <tbody >
+                        <tr >
+                        <td  style="padding-top: 0px; border:none">单目标定程序</td>
+                        <td  style="padding-top: 0px;border:none"><a href="pic1.png" download="pic1.png">点击下载</a></td>
+                        </tr>
+                        <tr>
+                        <td >双目标定程序</td>
+                        <td><a href="pic1.png" download="pic1.png">点击下载</a></td>
+                        </tr>
+                        <tr>
+                        <td >红外标定程序</td>
+                        <td><a href="pic1.png" download="pic1.png">点击下载</a></td>
+                        </tr>
+                        <tr>
+                        <td >位姿解算程序</td>
+                        <td><a href="pic1.png" download="pic1.png">点击下载</a></td>
+                        </tr>
+                        <tr>
+                        <td >三维重建程序</td>
+                        <td><a href="pic1.png" download="pic1.png">点击下载</a></td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+</div>
+</body>
+</html>
+
+
+ 
