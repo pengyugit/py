@@ -29,7 +29,7 @@ $(function(){
         url : "/login",
         type : "POST",
         dataType:"json",
-        //contentType : "application/json;charset=UTF-8",
+        contentType : "application/json;charset=UTF-8",
         data : JSON.stringify({
             user: $("#user").val(),	
             pass: $("#pass").val(),

@@ -2,21 +2,21 @@ import numpy as np
 from flask import Flask, make_response,Response,request,jsonify,render_template,session
 import cv2
 import base64
-import pymysql
+import sqlite3
 from keras.models import load_model
 
 #先预测一次防止keras报错
 global img
-#model = load_model('static/mnist.h5')
-#img = cv2.imread('static/img/2.png', 0)
-#img = cv2.resize(img, (28, 28))
-#img = (1 - np.array(img) / 255.0).reshape([-1, 28, 28, 1])
-#model.predict(img)
+model = load_model('static/mnist.h5')
+img = cv2.imread('static/img/2.png', 0)
+img = cv2.resize(img, (28, 28))
+img = (1 - np.array(img) / 255.0).reshape([-1, 28, 28, 1])
+model.predict(img)
 
 
 app = Flask(__name__)
 app.config['SECRET_KEY'] = '\xf1\x92Y\xdf\x8ejY\x04\x96\xb4V\x88\xfb\xfc\xb5\x18F\xa3\xee\xb9\xb9t\x01\xf0\x96'
-conn = pymysql.connect(host='127.0.0.1', user='root', password='123456', db='mydb', charset='utf8')
+conn = sqlite3.connect('py.db', check_same_thread=False)
 cur = conn.cursor()
 
 @app.route('/')
@@ -56,19 +56,18 @@ def register():
 def login():
     data=request.get_json('data')
     sql = "SELECT * FROM student where id= "+data['user']
-    try:
-        cur.execute(sql)
-        result = cur.fetchone() # cursor.fetchall()
-        if result[1] == data['pass']:
-            session['username']=result[2]
-            session['id']=result[0]
-            session['major']=result[5]
-            session['time']=result[7]
-            return jsonify({'name': 'xmr', 'age': 18})
-        else:
-            return 'error'
-    except:
+
+    cur.execute(sql)
+    result = cur.fetchone() # cursor.fetchall()
+    if result[2] == data['pass']:
+        session['username']=result[1]
+        session['id']=result[0]
+        session['major']=result[3]
+       # session['time']='2019.01.01'
+        return jsonify({'name': 'xmr', 'age': 's'})
+    else:
         return 'error'
+    
 
 @app.route("/logout")
 def logout():

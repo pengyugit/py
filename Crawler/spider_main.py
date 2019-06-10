@@ -17,17 +17,16 @@ class SpiderMain(object):
                 print('第{0}个url'.format(count))
                 new_url = self.urls.get_new_url()   #获取页面
                 html_cont = self.downloder.download(new_url)  #下载页面
-                new_urls, new_data = self.parser.parse(new_url, html_cont)
-                print(len(new_urls))
                 #下载后解析器解析数据得新的url列表和data
+                new_urls, new_data = self.parser.parse(new_url, html_cont)
                 self.urls.add_new_urls(new_urls) #添加url管理器
                 self.output.collect_data(new_data) #收集数据
-              
-                if count == 10:
+                if count == 1000:
                     break
                 count = count + 1
             except:
                 print('craw failed')
+        print('craw finish！')
         self.output.output_html()
             
     

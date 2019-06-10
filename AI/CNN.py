@@ -85,8 +85,10 @@ def evaluate():
 
 
 if __name__ == "__main__":
-    x_train, y_train =read_h5py()
-    print(y_train[0])
-    cv2.imshow('ss',x_train[0] )
-    cv2.waitKey(0)
-    model1(class_num=10, img_w=25, img_h=25)
+    mnist_to_img()
+    
+    # x_train, y_train =read_h5py()
+    # print(y_train[0])
+    # cv2.imshow('ss',x_train[0] )
+    # cv2.waitKey(0)
+    # model1(class_num=10, img_w=25, img_h=25)

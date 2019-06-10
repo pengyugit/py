@@ -32,8 +32,8 @@ Fz3=0
 Fx4=0
 Fy4=0
 Fz4=0
+
 def update(data):
-    #print(data)
     line0.set_data([data[0], data[1]])
     line0.set_3d_properties(data[2])
     line1.set_data([data[3], data[4]])
